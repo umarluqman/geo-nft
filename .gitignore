@@ -34,3 +34,9 @@ yarn-error.log*
 # vercel
 .vercel
 house-mapping-c0fe1-firebase-adminsdk-qkzv5-ff7a98e242.json
+
+node_modules
+
+#Hardhat files
+cache
+artifacts
