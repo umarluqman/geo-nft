@@ -74,5 +74,10 @@
   },
   "resolutions": {
     "graphql": "15.4"
+  },
+  "browser": {
+    "fs": false,
+    "path": false,
+    "os": false
   }
 }
