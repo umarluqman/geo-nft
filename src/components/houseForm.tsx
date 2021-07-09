@@ -15,6 +15,7 @@ import {
   UpdateHouseMutationVariables,
 } from "src/generated/UpdateHouseMutation";
 // import { CreateSignatureMutation } from "src/generated/CreateSignatureMutation";
+import { create as createIPFS } from "ipfs-http-client";
 
 const SIGNATURE_MUTATION = gql`
   mutation CreateSignatureMutation {
@@ -134,85 +135,33 @@ export default function HouseForm({ house }: IProps) {
     UpdateHouseMutationVariables
   >(UPDATE_HOUSE_MUTATION);
 
+  const ipfs = createIPFS({
+    host: "ipfs.infura.io",
+    port: 5001,
+    protocol: "https",
+  });
+
   const handleCreate = async (data: IFormData) => {
-    const { data: signatureData } = await createSignature();
-
-    if (signatureData) {
-      const { signature, timestamp } = signatureData.createImageSignature;
-
-      const imageData = await uploadImage(data.image[0], signature, timestamp);
-
-      const { data: houseData } = await createHouse({
-        variables: {
-          input: {
-            address: data.address,
-            image: imageData.secure_url,
-            coordinates: {
-              latitude: data.latitude,
-              longitude: data.longitude,
-            },
-            price: parseInt(data.price, 10),
-          },
-        },
-      });
+    console.log("ipfs", ipfs);
+    if (ipfs) {
+      console.log("ipf ssss");
 
       setSubmitting(false);
 
-      if (houseData?.createHouse) {
-        router.push(`/houses/${houseData.createHouse.id}`);
+      try {
+        const result = await ipfs.add(data.image[0]);
+        console.log("xx", result);
+      } catch (error) {
+        console.log({ error });
       }
-    }
-  };
-
-  const handleUpdate = async (currentHouse: IHouse, data: IFormData) => {
-    let image = currentHouse.image;
-
-    if (data.image[0]) {
-      const { data: signatureData } = await createSignature();
-
-      if (signatureData) {
-        const { signature, timestamp } = signatureData.createImageSignature;
-
-        const imageData = await uploadImage(
-          data.image[0],
-          signature,
-          timestamp
-        );
-
-        image = imageData.secure_url;
-      }
-    }
-
-    const { data: houseData } = await updateHouse({
-      variables: {
-        id: currentHouse.id,
-        input: {
-          address: data.address,
-          image,
-          coordinates: {
-            latitude: data.latitude,
-            longitude: data.longitude,
-          },
-          price: parseInt(data.price, 10),
-        },
-      },
-    });
-
-    setSubmitting(false);
-
-    if (houseData?.updateHouse) {
-      router.push(`/houses/${currentHouse.id}`);
+      // after successfully minted redirect to the detail page
     }
   };
 
   const onSubmit = (data: IFormData) => {
     setSubmitting(true);
 
-    if (!!house) {
-      handleUpdate(house, data);
-    } else {
-      handleCreate(data);
-    }
+    handleCreate(data);
   };
 
   return (
@@ -263,7 +212,7 @@ export default function HouseForm({ house }: IProps) {
 
                   const reader = new FileReader();
 
-                  reader.onloadend = () => {
+                  reader.onloadend = async () => {
                     setPreviewImage(reader.result as string);
                   };
 
@@ -271,27 +220,13 @@ export default function HouseForm({ house }: IProps) {
                 }
               }}
             />
-            {previewImage ? (
+            {previewImage && (
               <img
                 src={previewImage}
                 className="mt-4 object-cover"
                 style={{ width: "576px", height: `${(9 / 16) * 575}px` }}
               ></img>
-            ) : house ? (
-              <Image
-                className="mt-4"
-                cloudName={process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}
-                publicId={house.publicId}
-                alt={house.address}
-                secure
-                dpr="auto"
-                quality="auto"
-                width={576}
-                height={Math.floor((9 / 16) * 576)}
-                gravity="auto"
-                crop="fill"
-              />
-            ) : null}
+            )}
             {errors.image && <p>{errors.image.message}</p>}
           </div>
           <div className="mt-4">

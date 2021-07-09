@@ -5,10 +5,11 @@ import useUserAddress from "../hooks/useUserAddress";
 import { useRouter } from "next/router";
 import React, { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
+import Core from "web3modal";
 
 export const Account = () => {
-  const [injectedProvider, setInjectedProvider] = useState<Web3Provider>(null);
-  const [web3Modal, setWeb3Modal] = useState<any>(null); // later
+  const [injectedProvider, setInjectedProvider] = useState<Web3Provider>();
+  const [web3Modal, setWeb3Modal] = useState<Core>(); // later
   const router = useRouter();
 
   useEffect(() => {
@@ -30,11 +31,13 @@ export const Account = () => {
     }
   }, []);
 
-  const { userAddress, setUserAddress } = useUserAddress(injectedProvider);
+  const { userAddress, setUserAddress } = useUserAddress(
+    injectedProvider as Web3Provider
+  );
 
   const openWeb3Modal = useCallback(async () => {
     console.log("web3Modal", web3Modal);
-    const provider = await web3Modal.connect();
+    const provider = await web3Modal?.connect();
 
     console.log({ provider });
 
@@ -42,7 +45,7 @@ export const Account = () => {
   }, [web3Modal]);
 
   const logout = async () => {
-    await web3Modal.clearCachedProvider();
+    await web3Modal?.clearCachedProvider();
     router.replace(router.asPath);
     setUserAddress("");
   };
@@ -57,11 +60,6 @@ export const Account = () => {
 
   return (
     <>
-      {isConnected && (
-        <Link href="/houses/add">
-          <a>Mint</a>
-        </Link>
-      )}
       <div className="flex align-baseline h-auto">
         <p className="font-semibold mt-1 mr-3">{userAddress}</p>
         {isConnected ? (
