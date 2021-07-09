@@ -15,21 +15,21 @@ input CoordinateInput {
 
 type House {
   address: String!
-  price: Int!
   id: ID!
   image: String!
   latitude: Float!
   longitude: Float!
   nearby: [House!]!
+  price: Int!
   publicId: String!
   userId: String!
 }
 
 input HouseInput {
   address: String!
-  price: Int!
   coordinates: CoordinateInput!
   image: String!
+  price: Int!
 }
 
 type ImageSignature {
