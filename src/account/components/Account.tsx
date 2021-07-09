@@ -58,8 +58,8 @@ export const Account = () => {
   return (
     <>
       {isConnected && (
-        <Link href="/spot/mint">
-          <a>Mint Spot</a>
+        <Link href="/houses/add">
+          <a>Mint</a>
         </Link>
       )}
       <div className="flex align-baseline h-auto">

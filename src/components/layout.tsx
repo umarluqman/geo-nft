@@ -1,6 +1,7 @@
 import { FunctionComponent, ReactNode } from "react";
 import Link from "next/link";
 import { Account } from "src/account/components/Account";
+import { useAuth } from "src/auth/useAuth";
 interface iProps {
   main: ReactNode;
 }
