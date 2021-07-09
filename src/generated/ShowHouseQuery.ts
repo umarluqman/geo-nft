@@ -22,7 +22,7 @@ export interface ShowHouseQuery_house {
   publicId: string;
   latitude: number;
   longitude: number;
-  bedrooms: number;
+  price: number;
   nearby: ShowHouseQuery_house_nearby[];
 }
 

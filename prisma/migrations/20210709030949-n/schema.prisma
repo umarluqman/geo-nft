@@ -17,7 +17,7 @@ model House {
   latitude Float
   longitude Float
   address String
-  bedrooms Int
+  price Int
   createdAt DateTime @default(now()) @map(name: "created_at")
   updatedAt DateTime @default(now()) @map(name: "updated_at")
 

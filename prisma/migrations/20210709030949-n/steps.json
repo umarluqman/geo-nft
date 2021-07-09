@@ -133,7 +133,7 @@
     {
       "tag": "CreateField",
       "model": "House",
-      "field": "bedrooms",
+      "field": "price",
       "type": "Int",
       "arity": "Required"
     },

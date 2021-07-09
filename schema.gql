@@ -15,7 +15,7 @@ input CoordinateInput {
 
 type House {
   address: String!
-  bedrooms: Int!
+  price: Int!
   id: ID!
   image: String!
   latitude: Float!
@@ -27,7 +27,7 @@ type House {
 
 input HouseInput {
   address: String!
-  bedrooms: Int!
+  price: Int!
   coordinates: CoordinateInput!
   image: String!
 }
