@@ -16,7 +16,7 @@ const HOUSES_QUERY = gql`
       longitude
       address
       publicId
-      bedrooms
+      price
     }
   }
 `;

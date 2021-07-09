@@ -41,7 +41,7 @@ const UPDATE_HOUSE_MUTATION = gql`
       publicId
       latitude
       longitude
-      bedrooms
+      price
       address
     }
   }
@@ -76,7 +76,7 @@ interface IFormData {
   address: string;
   latitude: number;
   longitude: number;
-  bedrooms: string;
+  price: string;
   image: FileList;
 }
 
@@ -87,7 +87,7 @@ interface IHouse {
   longitude: number;
   image: string;
   publicId: string;
-  bedrooms: number;
+  price: number;
 }
 
 interface IProps {
@@ -108,7 +108,7 @@ export default function HouseForm({ house }: IProps) {
           address: house.address,
           latitude: house.latitude,
           longitude: house.longitude,
-          bedrooms: house.bedrooms.toString(),
+          price: house.price.toString(),
         }
       : {},
   });
@@ -151,7 +151,7 @@ export default function HouseForm({ house }: IProps) {
               latitude: data.latitude,
               longitude: data.longitude,
             },
-            bedrooms: parseInt(data.bedrooms, 10),
+            price: parseInt(data.price, 10),
           },
         },
       });
@@ -193,7 +193,7 @@ export default function HouseForm({ house }: IProps) {
             latitude: data.latitude,
             longitude: data.longitude,
           },
-          bedrooms: parseInt(data.bedrooms, 10),
+          price: parseInt(data.price, 10),
         },
       },
     });
@@ -218,11 +218,11 @@ export default function HouseForm({ house }: IProps) {
   return (
     <form className="mx-auto max-w-xl py-4" onSubmit={handleSubmit(onSubmit)}>
       <h1 className="text-xl">
-        {house ? `Editing ${house.address}` : `Add a new house`}{" "}
+        {house ? `Editing ${house.address}` : `Add a new spot`}{" "}
       </h1>
       <div className="mt-4">
         <label htmlFor="search" className="block">
-          Search for your address
+          Search for the spot address to mint
         </label>
         <SearchBox
           onSelectAddress={(address, latitude, longitude) => {
@@ -295,21 +295,22 @@ export default function HouseForm({ house }: IProps) {
             {errors.image && <p>{errors.image.message}</p>}
           </div>
           <div className="mt-4">
-            <label htmlFor="bedrooms" className="block">
+            <label htmlFor="price" className="block">
               {" "}
+              Price
             </label>{" "}
             <input
               className="p-2"
               type="number"
-              name="bedrooms"
-              id="bedrooms"
+              name="price"
+              id="price"
               ref={register({
-                required: "Please enter the number of bedrooms",
-                max: { value: 10, message: "Woahh, too big of a house" },
-                min: { value: 1, message: "Mush have at least 1 bedroom" },
+                required: "Please enter the price",
+                // max: { value: 10, message: "Woahh, too big of a house" },
+                min: { value: 500, message: "Must be more than 500 ONE" },
               })}
             ></input>
-            {errors.bedrooms && <p>{errors.bedrooms.message}</p>}
+            {errors.price && <p>{errors.price.message}</p>}
           </div>
           <div className="mt-4">
             <button

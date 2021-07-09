@@ -33,7 +33,7 @@ export default function HouseList({ houses, setHighlightedId }: IProps) {
             </div>
             <div className="sm:w-full md:w-1/2 sm:pl-0 md:pl-4">
               <h2 className="text-lg">{house.address}</h2>
-              <p>{house.bedrooms} 🛌 house</p>
+              <p>{house.price} 🛌 house</p>
             </div>
           </div>
         </Link>

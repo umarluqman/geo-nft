@@ -50,7 +50,7 @@ class HouseInput {
   coordinates!: CoordinateInput;
 
   @Field((_type) => Int)
-  bedrooms!: number;
+  price!: number;
 }
 
 @ObjectType()
@@ -80,7 +80,7 @@ class House {
   }
 
   @Field((_type) => Int)
-  bedrooms!: number;
+  price!: number;
 
   @Field((_type) => [House])
   async nearby(@Ctx() ctx: Context) {
@@ -134,7 +134,7 @@ export class HouseResolver {
         address: input.address,
         latitude: input.coordinates.latitude,
         longitude: input.coordinates.longitude,
-        bedrooms: input.bedrooms,
+        price: input.price,
       },
     });
   }
@@ -159,7 +159,7 @@ export class HouseResolver {
         address: input.address,
         latitude: input.coordinates.latitude,
         longitude: input.coordinates.longitude,
-        bedrooms: input.bedrooms,
+        price: input.price,
       },
     });
   }

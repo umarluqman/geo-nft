@@ -19,7 +19,7 @@ const EDIT_HOUSE_QUERY = gql`
       address
       image
       publicId
-      bedrooms
+      price
       latitude
       longitude
     }
