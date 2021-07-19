@@ -14,8 +14,8 @@
     "db:migrate:up": "yarn prisma migrate up --experimental",
     "db:migrate:down": "yarn prisma migrate down --experimental",
     "compile": "npx hardhat compile",
-    "testnet:deploy": "npx hardhat run scripts/deploy-marketplace.js --network testnet",
-    "test": "npx hardhat test"
+    "testnet:deploy": "npx hardhat run scripts/deploy-world.js --network testnet",
+    "test": "npx hardhat test test/test.js"
   },
   "dependencies": {
     "@apollo/client": "^3.2.5",
