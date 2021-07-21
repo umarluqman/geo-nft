@@ -10,8 +10,6 @@ export default function Auth() {
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   const uid = await loadIdToken(req as NextApiRequest);
 
-  console.log({ uid });
-
   if (uid) {
     res.setHeader("location", "/");
     res.statusCode = 302;

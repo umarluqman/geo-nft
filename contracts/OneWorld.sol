@@ -37,7 +37,7 @@ contract Token is Ownable, ERC721URIStorage {
   }
 }
 
-contract NFTMarketplace is ReentrancyGuard {
+contract Marketplace is ReentrancyGuard {
   using Counters for Counters.Counter;
   Counters.Counter private _itemIds; // to keep track of all items in marketplace
   Counters.Counter private _itemSold;
@@ -70,7 +70,7 @@ contract NFTMarketplace is ReentrancyGuard {
     bool sold
   );
 
-  function fivePercentOf(uint256 _value) private pure returns (uint256)  {
+  function fivePercentOf(uint256 _value) public pure returns (uint256)  {
     require((_value/10000) * 10000 == _value, 'Value is too small');
     return _value * 500/10000;
   }

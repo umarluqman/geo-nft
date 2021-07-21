@@ -1,25 +1,17 @@
-import { useState } from "react";
-import { useQuery, gql } from "@apollo/client";
-import { useDebounce } from "use-debounce";
+import { ethers } from "ethers";
+import { useEffect, useMemo, useState } from "react";
+import axios from "redaxios";
+import HouseList from "src/components/houseList";
 import Layout from "src/components/layout";
 import Map from "src/components/map";
-import HouseList from "src/components/houseList";
 import { useLastData } from "src/utils/useLastData";
 import { useLocalState } from "src/utils/useLocalState";
-import { HousesQuery, HousesQueryVariables } from "src/generated/HousesQuery";
+import { useDebounce } from "use-debounce";
+import Marketplace from "../artifacts/contracts/OneWorld.sol/Marketplace.json";
+import Token from "../artifacts/contracts/OneWorld.sol/Token.json";
 
-const HOUSES_QUERY = gql`
-  query HousesQuery($bounds: BoundsInput!) {
-    houses(bounds: $bounds) {
-      id
-      latitude
-      longitude
-      address
-      publicId
-      price
-    }
-  }
-`;
+const tokenAddress = process.env.NEXT_PUBLIC_NFT_ADDRESS;
+const marketplaceAddress = process.env.NEXT_PUBLIC_MARKETPLACE_ADDRESS;
 
 type BoundsArray = [[number, number], [number, number]];
 
@@ -40,6 +32,59 @@ const parseBounds = (boundsString: string) => {
 
 export default function Home() {
   const [highlightedId, setHighlightedId] = useState<string | null>(null);
+  const [nfts, setNfts] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  async function loadNFTs() {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const tokenContract = new ethers.Contract(
+      tokenAddress,
+      Token.abi,
+      provider
+    );
+    const marketContract = new ethers.Contract(
+      marketplaceAddress,
+      Marketplace.abi,
+      provider
+    );
+    setIsLoading(true);
+    const [first, ...data] = await marketContract.fetchMarketItems();
+
+    const items = await Promise.all(
+      data.map(async (i) => {
+        let tokenURI = await tokenContract.tokenURI(i.tokenId);
+
+        tokenURI = JSON.parse(tokenURI);
+
+        const meta = await axios.get(
+          "https://ipfs.infura.io/ipfs/" + tokenURI.image
+        );
+        let price = ethers.utils.formatUnits(i.price.toString(), "ether");
+
+        let item = {
+          price,
+          tokenId: i.tokenId.toNumber(),
+          seller: i.seller,
+          owner: i.owner,
+          image: meta.url,
+          address: tokenURI.name,
+          // description: tokenURI.description,
+          attributes: tokenURI.attributes,
+        };
+        console.log({ item });
+        return item;
+      })
+    );
+
+    setNfts(items);
+    setIsLoading(true);
+  }
+
+  console.log({ nfts });
+
+  useEffect(() => {
+    loadNFTs();
+  }, []);
 
   const [dataBounds, setDataBounds] = useLocalState<string>(
     "bounds",
@@ -48,18 +93,26 @@ export default function Home() {
 
   const [debouncedDataBounds] = useDebounce(dataBounds, 200);
 
-  const { data, error } = useQuery<HousesQuery, HousesQueryVariables>(
-    HOUSES_QUERY,
-    {
-      variables: { bounds: parseBounds(debouncedDataBounds) },
-    }
-  );
+  const bounds = parseBounds(debouncedDataBounds);
+
+  const data = useMemo(() => {
+    return nfts.filter(({ attributes }) => {
+      return (
+        attributes.latitude >= bounds.sw.latitude &&
+        attributes.latitude <= bounds.ne.latitude &&
+        attributes.longitude >= bounds.sw.longitude &&
+        attributes.longitude <= bounds.ne.longitude
+      );
+    });
+  }, [bounds, nfts]);
+
+  const error = false;
 
   const lastData = useLastData(data);
 
   if (error) return <Layout main={<div>Error loading houses</div>} />;
 
-  console.log(lastData);
+  console.log({ data, nfts, lastData });
 
   return (
     <Layout
@@ -70,7 +123,7 @@ export default function Home() {
             style={{ maxHeight: "calc(100vh - 64px)", overflowX: "scroll" }}
           >
             <HouseList
-              houses={lastData ? lastData.houses : []}
+              nfts={lastData ? lastData : []}
               setHighlightedId={setHighlightedId}
             />
           </div>
@@ -78,7 +131,7 @@ export default function Home() {
           <div className="w-1/2">
             <Map
               setDataBounds={setDataBounds}
-              houses={lastData ? lastData.houses : []}
+              nfts={lastData ? lastData : []}
               highlightedId={highlightedId}
             />
           </div>

@@ -2,14 +2,14 @@ const { expect } = require("chai");
 
 describe("NFTMarketplace", function () {
   it("Should create token and market item", async function () {
-    const NFTMarketplace = await ethers.getContractFactory("NFTMarketplace");
+    const NFTMarketplace = await ethers.getContractFactory("Marketplace");
     const marketplace = await NFTMarketplace.deploy();
     await marketplace.deployed();
     const marketContractAddress = marketplace.address;
 
     // console.log("marketContractAddress", marketContractAddress);
 
-    const NFT = await ethers.getContractFactory("NFT");
+    const NFT = await ethers.getContractFactory("Token");
     const nft = await NFT.deploy(marketContractAddress);
     await nft.deployed();
     const nftContractAddress = nft.address;

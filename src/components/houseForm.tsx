@@ -1,78 +1,13 @@
-import React, { useState, useEffect, ChangeEvent } from "react";
-import { useForm } from "react-hook-form";
-import { useMutation, gql } from "@apollo/client";
-import router, { useRouter } from "next/router";
-import Link from "next/link";
-import { Image } from "cloudinary-react";
-import { SearchBox } from "./searchBox";
-import { CreateSignatureMutation } from "src/generated/CreateSignatureMutation";
-import {
-  CreateHouseMutation,
-  CreateHouseMutationVariables,
-} from "src/generated/CreateHouseMutation";
-import {
-  UpdateHouseMutation,
-  UpdateHouseMutationVariables,
-} from "src/generated/UpdateHouseMutation";
-// import { CreateSignatureMutation } from "src/generated/CreateSignatureMutation";
+import { ethers } from "ethers";
 import { create as createIPFS } from "ipfs-http-client";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import React, { ChangeEvent, useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import NFTMarketplace from "../../artifacts/contracts/OneWorld.sol/Marketplace.json";
+import Token from "../../artifacts/contracts/OneWorld.sol/Token.json";
+import { SearchBox } from "./searchBox";
 
-const SIGNATURE_MUTATION = gql`
-  mutation CreateSignatureMutation {
-    createImageSignature {
-      signature
-      timestamp
-    }
-  }
-`;
-
-const CREATE_HOUSE_MUTATION = gql`
-  mutation CreateHouseMutation($input: HouseInput!) {
-    createHouse(input: $input) {
-      id
-    }
-  }
-`;
-
-const UPDATE_HOUSE_MUTATION = gql`
-  mutation UpdateHouseMutation($id: String!, $input: HouseInput!) {
-    updateHouse(id: $id, input: $input) {
-      id
-      image
-      publicId
-      latitude
-      longitude
-      price
-      address
-    }
-  }
-`;
-
-interface IUploadImageResponse {
-  secure_url: string;
-}
-
-const uploadImage = async (
-  image: File,
-  signature: string,
-  timestamp: number
-): Promise<IUploadImageResponse> => {
-  const url = `	https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/upload`;
-
-  const formData = new FormData();
-
-  formData.append("file", image);
-  formData.append("signature", signature);
-  formData.append("timestamp", timestamp.toString());
-  formData.append("api_key", process.env.NEXT_PUBLIC_CLOUDINARY_KEY ?? "");
-
-  const response = await fetch(url, {
-    method: "post",
-    body: formData,
-  });
-
-  return response.json();
-};
 interface IFormData {
   address: string;
   latitude: number;
@@ -96,6 +31,8 @@ interface IProps {
 }
 
 export default function HouseForm({ house }: IProps) {
+  const tokenAddress = process.env.NEXT_PUBLIC_NFT_ADDRESS;
+  const nftMarketplaceAddress = process.env.NEXT_PUBLIC_MARKETPLACE_ADDRESS;
   const router = useRouter();
 
   const [submitting, setSubmitting] = useState(false);
@@ -115,9 +52,6 @@ export default function HouseForm({ house }: IProps) {
   });
 
   const address = watch("address");
-  const [createSignature] = useMutation<CreateSignatureMutation>(
-    SIGNATURE_MUTATION
-  );
 
   useEffect(() => {
     register({ name: "address" }, { required: "Please enter your address" });
@@ -125,36 +59,72 @@ export default function HouseForm({ house }: IProps) {
     register({ name: "longitude" }, { required: true, min: -180, max: 180 });
   }, [register]);
 
-  const [createHouse] = useMutation<
-    CreateHouseMutation,
-    CreateHouseMutationVariables
-  >(CREATE_HOUSE_MUTATION);
-
-  const [updateHouse] = useMutation<
-    UpdateHouseMutation,
-    UpdateHouseMutationVariables
-  >(UPDATE_HOUSE_MUTATION);
-
   const ipfs = createIPFS({
     host: "ipfs.infura.io",
     port: 5001,
     protocol: "https",
   });
 
+  console.log("token address", tokenAddress);
+  console.log("nft marketplace address", nftMarketplaceAddress);
+
+  async function requestAccount() {
+    await window.ethereum.request({ method: "eth_requestAccounts" });
+  }
+
   const handleCreate = async (data: IFormData) => {
     console.log("ipfs", ipfs);
     if (ipfs) {
-      console.log("ipf ssss");
-
       setSubmitting(false);
-
       try {
         const result = await ipfs.add(data.image[0]);
-        console.log("xx", result);
+        const tokenURI = {
+          name: data.address,
+          image: result.path,
+          attributes: {
+            latitude: data.latitude,
+            longitude: data.longitude,
+          },
+        };
+        console.log({ tokenURI, window, tokenAddress });
+        if (typeof window.ethereum !== "undefined" && tokenAddress) {
+          console.log({ eth: window.ethereum });
+          await requestAccount();
+          const provider = new ethers.providers.Web3Provider(window.ethereum);
+          const signer = provider.getSigner();
+          let contract = new ethers.Contract(tokenAddress, Token.abi, signer);
+          let transaction = await contract.createToken(
+            JSON.stringify(tokenURI)
+          );
+          const tx = await transaction.wait();
+          let event = tx.events[0];
+          let value = event.args[2];
+          let tokenId = value.toNumber();
+
+          const price = ethers.utils.parseUnits(data.price, "ether");
+          console.log({ price });
+
+          contract = new ethers.Contract(
+            nftMarketplaceAddress,
+            NFTMarketplace.abi,
+            signer
+          );
+
+          let listingPrice = await contract.getListingPrice(price);
+          listingPrice = listingPrice.toString();
+
+          transaction = await contract.createMarketItem(
+            tokenAddress,
+            tokenId,
+            price,
+            { value: listingPrice }
+          );
+          await transaction.wait();
+          router.push("/");
+        }
       } catch (error) {
         console.log({ error });
       }
-      // after successfully minted redirect to the detail page
     }
   };
 
@@ -242,7 +212,7 @@ export default function HouseForm({ house }: IProps) {
               ref={register({
                 required: "Please enter the price",
                 // max: { value: 10, message: "Woahh, too big of a house" },
-                min: { value: 500, message: "Must be more than 500 ONE" },
+                min: { value: 5, message: "Must be more than 5 ETH" },
               })}
             ></input>
             {errors.price && <p>{errors.price.message}</p>}

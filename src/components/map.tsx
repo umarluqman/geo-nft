@@ -9,11 +9,11 @@ import { SearchBox } from "./searchBox";
 
 interface iProps {
   setDataBounds: (bounds: string) => void;
-  houses: HousesQuery_houses[];
+  nfts: HousesQuery_houses[];
   highlightedId: string | null;
 }
 
-const Map = ({ setDataBounds, houses, highlightedId }: iProps) => {
+const Map = ({ setDataBounds, nfts, highlightedId }: iProps) => {
   const [selected, setSelected] = useState<HousesQuery_houses | null>(null);
 
   const mapRef = useRef<ReactMapGL | null>();
@@ -23,6 +23,8 @@ const Map = ({ setDataBounds, houses, highlightedId }: iProps) => {
     longitude: -79,
     zoom: 10,
   });
+
+  console.log({ highlightedId, nfts });
 
   return (
     <div className="text-black relative">
@@ -68,33 +70,33 @@ const Map = ({ setDataBounds, houses, highlightedId }: iProps) => {
             }}
           />
         </div>
-        {houses.map((house) => (
+        {nfts?.map((nft) => (
           <Marker
-            key={house.id}
-            latitude={house.latitude}
-            longitude={house.longitude}
+            key={nft.tokenId}
+            latitude={nft?.attributes?.latitude}
+            longitude={nft?.attributes?.longitude}
             offsetLeft={-15}
             offsetTop={-15}
-            className={highlightedId === house.id ? "marker-active" : ""}
+            className={highlightedId === nft.tokenId ? "marker-active" : ""}
           >
             <button
               style={{ width: "30px", height: "30px", fontSize: "30px" }}
               type="button"
-              onClick={() => setSelected(house)}
+              onClick={() => setSelected(nft)}
             >
               <img
                 src={
-                  highlightedId === house.id
+                  highlightedId === nft.tokenId
                     ? "/home-color.svg"
                     : "/home-solid.svg"
                 }
-                alt="house"
+                alt="nft"
                 className="w-8"
               ></img>
             </button>
           </Marker>
         ))}
-        {selected && (
+        {/* {selected && (
           <Popup
             latitude={selected.latitude}
             longitude={selected.longitude}
@@ -120,7 +122,7 @@ const Map = ({ setDataBounds, houses, highlightedId }: iProps) => {
               </Link>
             </div>
           </Popup>
-        )}
+        )} */}
       </ReactMapGL>
     </div>
   );

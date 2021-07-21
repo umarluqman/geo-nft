@@ -1,39 +1,34 @@
 import Link from "next/link";
-import { Image } from "cloudinary-react";
 import { HousesQuery_houses } from "src/generated/HousesQuery";
+// import Image from "next/image";
 
 interface IProps {
   houses: HousesQuery_houses[];
   setHighlightedId: (id: string | null) => void;
 }
 
-export default function HouseList({ houses, setHighlightedId }: IProps) {
+export default function HouseList({ nfts, setHighlightedId }: IProps) {
+  console.log({ nfts });
   return (
     <>
-      {houses.map((house) => (
-        <Link key={house.id} href={`/houses/${house.id}`}>
+      {nfts?.map((nft) => (
+        <Link key={nft.tokenId} href={`/houses/${nft.tokenId}`}>
           <div
             className="px-6 pt-4 cursor-pointer flex flex-wrap"
-            onMouseEnter={() => setHighlightedId(house.id)}
+            onMouseEnter={() => setHighlightedId(nft.tokenId)}
             onMouseLeave={() => setHighlightedId(null)}
           >
             <div className="sm:w-full md:w-1/2">
-              <Image
-                cloudName={process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}
-                publicId={house.publicId}
-                alt={house.address}
-                dpr="auto"
-                quality="auto"
-                secure
+              <img
+                alt={nft.address}
                 width={350}
                 height={Math.floor((9 / 16) * 350)}
-                gravity="auto"
-                crop="fill"
+                src={nft.image}
               />
             </div>
             <div className="sm:w-full md:w-1/2 sm:pl-0 md:pl-4">
-              <h2 className="text-lg">{house.address}</h2>
-              <p>{house.price} 🛌 house</p>
+              <h2 className="text-lg">{nft.address}</h2>
+              <p>{nft.price} ONE</p>
             </div>
           </div>
         </Link>

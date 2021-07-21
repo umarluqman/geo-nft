@@ -52,6 +52,7 @@
     "react-firebaseui": "^4.1.0",
     "react-hook-form": "^6.11.1",
     "react-map-gl": "^5.2.10",
+    "redaxios": "^0.4.1",
     "reflect-metadata": "^0.1.13",
     "tailwindcss": "^2.0.1",
     "type-graphql": "^1.1.1",
