@@ -18,6 +18,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules", ".env.local"]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "hardhat.config.js"],
+  "exclude": ["node_modules", ".env.local"],
+  "files": ["hardhat.config.js"]
 }
