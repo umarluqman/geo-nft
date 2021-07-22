@@ -87,8 +87,8 @@ const Map = ({ setDataBounds, nfts, highlightedId }: iProps) => {
               <img
                 src={
                   highlightedId === nft.tokenId
-                    ? "/home-color.svg"
-                    : "/home-solid.svg"
+                    ? "/map-pin-selected.svg"
+                    : "/map-pin.svg"
                 }
                 alt="nft"
                 className="w-8"
