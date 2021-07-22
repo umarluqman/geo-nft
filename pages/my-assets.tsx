@@ -9,6 +9,8 @@ import { useLocalState } from "src/utils/useLocalState";
 import { useDebounce } from "use-debounce";
 import Marketplace from "../artifacts/contracts/OneWorld.sol/Marketplace.json";
 import Token from "../artifacts/contracts/OneWorld.sol/Token.json";
+import type { Marketplace as marketplaceType } from "types";
+import useUserAddress from "src/account/hooks/useUserAddress";
 
 const tokenAddress = process.env.NEXT_PUBLIC_NFT_ADDRESS;
 const marketplaceAddress = process.env.NEXT_PUBLIC_MARKETPLACE_ADDRESS;
@@ -30,13 +32,16 @@ const parseBounds = (boundsString: string) => {
   };
 };
 
-export default function Home() {
+export default function MyNFTs() {
   const [highlightedId, setHighlightedId] = useState<string | null>(null);
   const [nfts, setNfts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   async function loadNFTs() {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
+
+    const signer = provider.getSigner();
+
     const tokenContract = new ethers.Contract(
       tokenAddress,
       Token.abi,
@@ -45,42 +50,47 @@ export default function Home() {
     const marketContract = new ethers.Contract(
       marketplaceAddress,
       Marketplace.abi,
-      provider
-    );
-    setIsLoading(true);
-    const data = await marketContract.fetchMarketItems();
-
-    const items = await Promise.all(
-      data.map(async (i) => {
-        let tokenURI = await tokenContract.tokenURI(i.tokenId);
-
-        tokenURI = JSON.parse(tokenURI);
-
-        const meta = await axios.get(
-          "https://ipfs.infura.io/ipfs/" + tokenURI.image
-        );
-        let price = ethers.utils.formatUnits(i.price.toString(), "ether");
-
-        let item = {
-          price,
-          tokenId: i.tokenId.toNumber(),
-          seller: i.seller,
-          owner: i.owner,
-          image: meta.url,
-          address: tokenURI.name,
-          // description: tokenURI.description,
-          attributes: tokenURI.attributes,
-        };
-        console.log({ item });
-        return item;
-      })
+      signer
     );
 
-    setNfts(items);
     setIsLoading(true);
+    try {
+      const data = await marketContract.fetchMyNfts();
+      console.log({ mynft: data, provider });
+
+      const items = await Promise.all(
+        data.map(async (i) => {
+          let tokenURI = await tokenContract.tokenURI(i.tokenId);
+
+          tokenURI = JSON.parse(tokenURI);
+
+          const meta = await axios.get(
+            "https://ipfs.infura.io/ipfs/" + tokenURI.image
+          );
+          let price = ethers.utils.formatUnits(i.price.toString(), "ether");
+
+          let item = {
+            price,
+            tokenId: i.tokenId.toNumber(),
+            seller: i.seller,
+            owner: i.owner,
+            image: meta.url,
+            address: tokenURI.name,
+            // description: tokenURI.description,
+            attributes: tokenURI.attributes,
+          };
+          console.log({ item });
+          return item;
+        })
+      );
+
+      setNfts(items);
+    } catch (error) {
+      console.log("error", error);
+    } finally {
+      setIsLoading(false);
+    }
   }
-
-  console.log({ nfts });
 
   useEffect(() => {
     loadNFTs();
@@ -106,13 +116,7 @@ export default function Home() {
     });
   }, [bounds, nfts]);
 
-  const error = false;
-
   const lastData = useLastData(data);
-
-  if (error) return <Layout main={<div>Error loading houses</div>} />;
-
-  console.log({ data, nfts, lastData });
 
   return (
     <Layout

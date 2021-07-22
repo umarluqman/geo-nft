@@ -36,7 +36,7 @@ const Map = ({ setDataBounds, nfts, highlightedId }: iProps) => {
         onViewportChange={(nextViewport) => setViewport(nextViewport)}
         ref={(instance) => (mapRef.current = instance)}
         minZoom={5}
-        maxZoom={15}
+        maxZoom={100}
         mapStyle="mapbox://styles/leighhalliday/ckhjaksxg0x2v19s1ovps41ef"
         onLoad={() => {
           if (mapRef.current) {
