@@ -1,5 +1,7 @@
 import { ethers } from "ethers";
+import Link from "next/link";
 import router, { useRouter } from "next/router";
+import React, { useState } from "react";
 import { HousesQuery_houses } from "src/generated/HousesQuery";
 // import { Marketplace } from "types";
 import Web3Modal from "web3modal";
@@ -15,17 +17,16 @@ interface IProps {
 const tokenAddress = process.env.NEXT_PUBLIC_NFT_ADDRESS;
 const marketplaceAddress = process.env.NEXT_PUBLIC_MARKETPLACE_ADDRESS;
 
-export default function HouseList({
+export default function LocationList({
   nfts,
   setHighlightedId,
-  loadNFTs,
+  fetchingStatus,
 }: IProps) {
-  console.log({ nfts });
-
   const router = useRouter();
 
   async function buyNft(nft) {
     console.log({ nft });
+
     try {
       const web3Modal = new Web3Modal();
       const connection = await web3Modal.connect();
@@ -47,11 +48,22 @@ export default function HouseList({
         }
       );
       await transaction.wait();
-      // loadNFTs();
       router.push("/my-assets");
     } catch (error) {
       console.log({ error });
     }
+  }
+
+  console.log({ fetchingStatus });
+  if (nfts?.length === 0 && fetchingStatus === "done-fetching") {
+    return (
+      <p className="p-2 ">
+        You don't own any location NFT, get one{" "}
+        <Link href="/">
+          <a className="text-green-400 font-medium">here</a>
+        </Link>
+      </p>
+    );
   }
 
   return (
@@ -73,13 +85,22 @@ export default function HouseList({
           </div>
           <div className="sm:w-full md:w-1/2 sm:pl-0 md:pl-4">
             <h2 className="text-lg">{nft.address}</h2>
-            <p>{nft.price} ONE</p>
-            <button
-              className="bg-green-500 text-white font-bold py-2 px-12 rounded"
-              onClick={() => buyNft(nft)}
-            >
-              Buy
-            </button>
+            <p className="text-blue-300">{nft.price} ONE</p>
+            {router.pathname === "/" ? (
+              <button
+                className="bg-green-200 text-green-600 hover:bg-green-500 hover:text-green-100  font-bold py-2 px-12 rounded"
+                onClick={() => buyNft(nft)}
+              >
+                Buy
+              </button>
+            ) : (
+              <button
+                className="bg-green-200 text-green-600 hover:bg-green-500 hover:text-green-100  font-bold py-2 px-12 rounded"
+                onClick={() => {}}
+              >
+                Sell
+              </button>
+            )}
           </div>
         </div>
       ))}

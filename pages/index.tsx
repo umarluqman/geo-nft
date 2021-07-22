@@ -33,9 +33,10 @@ const parseBounds = (boundsString: string) => {
 export default function Home() {
   const [highlightedId, setHighlightedId] = useState<string | null>(null);
   const [nfts, setNfts] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [fetchingStatus, setFetchingStatus] = useState("idle");
 
   async function loadNFTs() {
+    setFetchingStatus("fetching");
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const tokenContract = new ethers.Contract(
       tokenAddress,
@@ -47,37 +48,40 @@ export default function Home() {
       Marketplace.abi,
       provider
     );
-    setIsLoading(true);
-    const data = await marketContract.fetchMarketItems();
+    try {
+      const data = await marketContract.fetchMarketItems();
 
-    const items = await Promise.all(
-      data.map(async (i) => {
-        let tokenURI = await tokenContract.tokenURI(i.tokenId);
+      const items = await Promise.all(
+        data.map(async (i) => {
+          let tokenURI = await tokenContract.tokenURI(i.tokenId);
 
-        tokenURI = JSON.parse(tokenURI);
+          tokenURI = JSON.parse(tokenURI);
 
-        const meta = await axios.get(
-          "https://ipfs.infura.io/ipfs/" + tokenURI.image
-        );
-        let price = ethers.utils.formatUnits(i.price.toString(), "ether");
+          const meta = await axios.get(
+            "https://ipfs.infura.io/ipfs/" + tokenURI.image
+          );
+          let price = ethers.utils.formatUnits(i.price.toString(), "ether");
 
-        let item = {
-          price,
-          tokenId: i.tokenId.toNumber(),
-          seller: i.seller,
-          owner: i.owner,
-          image: meta.url,
-          address: tokenURI.name,
-          // description: tokenURI.description,
-          attributes: tokenURI.attributes,
-        };
-        console.log({ item });
-        return item;
-      })
-    );
-
-    setNfts(items);
-    setIsLoading(true);
+          let item = {
+            price,
+            tokenId: i.tokenId.toNumber(),
+            seller: i.seller,
+            owner: i.owner,
+            image: meta.url,
+            address: tokenURI.name,
+            // description: tokenURI.description,
+            attributes: tokenURI.attributes,
+          };
+          console.log({ item });
+          return item;
+        })
+      );
+      setNfts(items);
+    } catch (error) {
+      console.log({ error });
+    } finally {
+      setFetchingStatus("done-fetching");
+    }
   }
 
   console.log({ nfts });
@@ -125,7 +129,7 @@ export default function Home() {
             <LocationList
               nfts={lastData ? lastData : []}
               setHighlightedId={setHighlightedId}
-              loadNFTs={loadNFTs}
+              fetchingStatus={fetchingStatus}
             />
           </div>
 

@@ -33,7 +33,7 @@ const parseBounds = (boundsString: string) => {
 export default function MyNFTs() {
   const [highlightedId, setHighlightedId] = useState<string | null>(null);
   const [nfts, setNfts] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [fetchingStatus, setFetchingStatus] = useState("idle");
 
   async function loadNFTs() {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -51,7 +51,7 @@ export default function MyNFTs() {
       signer
     );
 
-    setIsLoading(true);
+    setFetchingStatus("fetching");
     try {
       const data = await marketContract.fetchMyNfts();
       console.log({ mynft: data, provider });
@@ -86,7 +86,7 @@ export default function MyNFTs() {
     } catch (error) {
       console.log("error", error);
     } finally {
-      setIsLoading(false);
+      setFetchingStatus("done-fetching");
     }
   }
 
@@ -127,7 +127,7 @@ export default function MyNFTs() {
             <LocationList
               nfts={lastData ? lastData : []}
               setHighlightedId={setHighlightedId}
-              loadNFTs={loadNFTs}
+              fetchingStatus={fetchingStatus}
             />
           </div>
 
