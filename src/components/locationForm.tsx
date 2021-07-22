@@ -16,21 +16,7 @@ interface IFormData {
   image: FileList;
 }
 
-interface IHouse {
-  id: string;
-  address: string;
-  latitude: number;
-  longitude: number;
-  image: string;
-  publicId: string;
-  price: number;
-}
-
-interface IProps {
-  house?: IHouse;
-}
-
-export default function HouseForm({ house }: IProps) {
+export default function HouseForm() {
   const tokenAddress = process.env.NEXT_PUBLIC_NFT_ADDRESS;
   const nftMarketplaceAddress = process.env.NEXT_PUBLIC_MARKETPLACE_ADDRESS;
   const router = useRouter();
@@ -41,14 +27,7 @@ export default function HouseForm({ house }: IProps) {
   const { register, handleSubmit, setValue, errors, watch } = useForm<
     IFormData
   >({
-    defaultValues: house
-      ? {
-          address: house.address,
-          latitude: house.latitude,
-          longitude: house.longitude,
-          price: house.price.toString(),
-        }
-      : {},
+    defaultValues: {},
   });
 
   const address = watch("address");
@@ -65,15 +44,11 @@ export default function HouseForm({ house }: IProps) {
     protocol: "https",
   });
 
-  console.log("token address", tokenAddress);
-  console.log("nft marketplace address", nftMarketplaceAddress);
-
   async function requestAccount() {
     await window.ethereum.request({ method: "eth_requestAccounts" });
   }
 
   const handleCreate = async (data: IFormData) => {
-    console.log("ipfs", ipfs);
     if (ipfs) {
       setSubmitting(false);
       try {
@@ -86,9 +61,8 @@ export default function HouseForm({ house }: IProps) {
             longitude: data.longitude,
           },
         };
-        console.log({ tokenURI, window, tokenAddress });
+
         if (typeof window.ethereum !== "undefined" && tokenAddress) {
-          console.log({ eth: window.ethereum });
           await requestAccount();
           const provider = new ethers.providers.Web3Provider(window.ethereum);
           const signer = provider.getSigner();
@@ -102,7 +76,6 @@ export default function HouseForm({ house }: IProps) {
           let tokenId = value.toNumber();
 
           const price = ethers.utils.parseUnits(data.price, "ether");
-          console.log({ price });
 
           contract = new ethers.Contract(
             nftMarketplaceAddress,
@@ -130,18 +103,15 @@ export default function HouseForm({ house }: IProps) {
 
   const onSubmit = (data: IFormData) => {
     setSubmitting(true);
-
     handleCreate(data);
   };
 
   return (
     <form className="mx-auto max-w-xl py-4" onSubmit={handleSubmit(onSubmit)}>
-      <h1 className="text-xl">
-        {house ? `Editing ${house.address}` : `Add a new spot`}{" "}
-      </h1>
+      <h1 className="text-xl">Mint a new location</h1>
       <div className="mt-4">
         <label htmlFor="search" className="block">
-          Search for the spot address to mint
+          Search for the location
         </label>
         <SearchBox
           onSelectAddress={(address, latitude, longitude) => {
@@ -149,7 +119,7 @@ export default function HouseForm({ house }: IProps) {
             setValue("latitude", latitude);
             setValue("longitude", longitude);
           }}
-          defaultValue={house ? house.address : ""}
+          defaultValue={""}
         />
         {errors.address && <p>{errors.address.message}</p>}
       </div>
@@ -172,7 +142,7 @@ export default function HouseForm({ house }: IProps) {
               style={{ display: "none" }}
               ref={register({
                 validate: (fileList: FileList) => {
-                  if (house || fileList.length === 1) return true;
+                  if (fileList.length === 1) return true;
                   return "Plese upload one file";
                 },
               })}
@@ -211,8 +181,7 @@ export default function HouseForm({ house }: IProps) {
               id="price"
               ref={register({
                 required: "Please enter the price",
-                // max: { value: 10, message: "Woahh, too big of a house" },
-                min: { value: 5, message: "Must be more than 5 ETH" },
+                min: { value: 5, message: "Must be more than 5 ONE" },
               })}
             ></input>
             {errors.price && <p>{errors.price.message}</p>}
@@ -229,7 +198,7 @@ export default function HouseForm({ house }: IProps) {
             >
               Save
             </button>{" "}
-            <Link href={house ? `/houses/${house.id}` : "/"}>
+            <Link href={"/"}>
               <a>Cancel</a>
             </Link>
           </div>

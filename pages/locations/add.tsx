@@ -1,7 +1,7 @@
 import React from "react";
-import HouseForm from "src/components/houseForm";
+import LocationForm from "src/components/locationForm";
 import Layout from "src/components/layout";
 
 export default function Add() {
-  return <Layout main={<HouseForm />} />;
+  return <Layout main={<LocationForm />} />;
 }
