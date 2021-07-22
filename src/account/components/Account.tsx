@@ -39,8 +39,6 @@ export const Account = () => {
     console.log("web3Modal", web3Modal);
     const provider = await web3Modal?.connect();
 
-    console.log({ provider });
-
     setInjectedProvider(new ethers.providers.Web3Provider(provider));
   }, [web3Modal]);
 
@@ -61,7 +59,7 @@ export const Account = () => {
   return (
     <>
       <div className="flex align-baseline h-auto">
-        <p className="font-semibold mt-1 mr-3">{userAddress}</p>
+        <p className="mt-1 mr-3">{userAddress}</p>
         {isConnected ? (
           <button
             style={{ verticalAlign: "top", marginLeft: 8, marginTop: 4 }}
