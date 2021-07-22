@@ -40,7 +40,7 @@ contract Token is Ownable, ERC721URIStorage {
 contract Marketplace is ReentrancyGuard {
   using Counters for Counters.Counter;
   Counters.Counter private _itemIds; // to keep track of all items in marketplace
-  Counters.Counter private _itemSold;
+  Counters.Counter private _itemsSold;
 
   address payable owner;
 
@@ -123,6 +123,8 @@ contract Marketplace is ReentrancyGuard {
     );   
   }
 
+/* Creates the sale of a marketplace item */
+  /* Transfers ownership of the item, as well as funds between parties */
   function createMarketSale(
     address nftContract,
     uint itemId
@@ -138,14 +140,15 @@ contract Marketplace is ReentrancyGuard {
     IERC721(nftContract).transferFrom(address(this), msg.sender, tokenId); // transfer the NFT from marketplace address to the buyer address
 
     idToMarketItem[itemId].owner = payable(msg.sender);
-    _itemSold.increment();
+    idToMarketItem[itemId].sold = true;
+    _itemsSold.increment();
 
     payable(owner).transfer(fivePercentOf(price)); // pay the marketplace fee when a sale is created
   }
 
   function fetchMarketItems() public view returns (MarketItem[] memory) {
     uint totalItemCount = _itemIds.current(); // get market item count
-    uint unsoldItemCount = totalItemCount - _itemSold.current();
+    uint unsoldItemCount = totalItemCount - _itemsSold.current();
     uint currentIndex = 0;
     
     MarketItem[] memory items = new MarketItem[](unsoldItemCount); // array of unsold items
@@ -161,6 +164,7 @@ contract Marketplace is ReentrancyGuard {
     return items;  
   }
 
+/* Returns onlyl items that a user has purchased */
   function fetchMyNfts() public view returns (MarketItem[] memory) {
     uint totalItemCount = _itemIds.current();
     uint itemCount = 0;
@@ -175,7 +179,7 @@ contract Marketplace is ReentrancyGuard {
     
     MarketItem[] memory items = new MarketItem[](itemCount);
     for (uint i = 0; i < totalItemCount; i++) {
-        if (idToMarketItem[i + 1].owner == msg.sender) {
+      if (idToMarketItem[i + 1].owner == msg.sender) {
         uint currentId = i + 1;
         MarketItem storage currentItem = idToMarketItem[currentId];
         items[currentIndex] = currentItem;
@@ -186,6 +190,7 @@ contract Marketplace is ReentrancyGuard {
     return items;
   }
 
+/* Returns only items a user has created */
   function fetchItemsCreated() public view returns (MarketItem[] memory) {
     uint totalItemCount = _itemIds.current();
     uint itemCount = 0;
