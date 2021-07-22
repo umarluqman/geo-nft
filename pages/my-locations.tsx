@@ -1,16 +1,14 @@
 import { ethers } from "ethers";
 import { useEffect, useMemo, useState } from "react";
 import axios from "redaxios";
-import LocationList from "src/components/locationList";
 import Layout from "src/components/layout";
+import LocationList from "src/components/locationList";
 import Map from "src/components/map";
 import { useLastData } from "src/utils/useLastData";
 import { useLocalState } from "src/utils/useLocalState";
 import { useDebounce } from "use-debounce";
 import Marketplace from "../artifacts/contracts/OneWorld.sol/Marketplace.json";
 import Token from "../artifacts/contracts/OneWorld.sol/Token.json";
-import type { Marketplace as marketplaceType } from "types";
-import useUserAddress from "src/account/hooks/useUserAddress";
 
 const tokenAddress = process.env.NEXT_PUBLIC_NFT_ADDRESS;
 const marketplaceAddress = process.env.NEXT_PUBLIC_MARKETPLACE_ADDRESS;
