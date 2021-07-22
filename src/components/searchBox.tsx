@@ -86,7 +86,7 @@ const ReadySearchBox = ({ onSelectAddress, defaultValue }: ISearchBoxProps) => {
         value={value}
         onChange={handleChange}
         disabled={!ready}
-        placeholder="Search location"
+        placeholder="Eg. Kuala Lumpur"
         className="w-full p-2"
         autoComplete="off"
       />

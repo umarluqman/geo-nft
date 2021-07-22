@@ -96,6 +96,12 @@ export default function HouseForm() {
           router.push("/");
         }
       } catch (error) {
+        if (
+          error?.data?.message ===
+          "execution reverted: Ownable: caller is not the owner"
+        ) {
+          alert("Only the contract owner can mint");
+        }
         console.log({ error });
       }
     }
@@ -107,11 +113,13 @@ export default function HouseForm() {
   };
 
   return (
-    <form className="mx-auto max-w-xl py-4" onSubmit={handleSubmit(onSubmit)}>
-      <h1 className="text-xl">Mint a new location</h1>
+    <form className="mx-auto max-w-xl py-6" onSubmit={handleSubmit(onSubmit)}>
+      <h1 className="text-xl">
+        Mint a new location and publish to the marketplace
+      </h1>
       <div className="mt-4">
-        <label htmlFor="search" className="block">
-          Search for the location
+        <label htmlFor="search" className="block mb-1">
+          Search a location
         </label>
         <SearchBox
           onSelectAddress={(address, latitude, longitude) => {
@@ -127,7 +135,7 @@ export default function HouseForm() {
       {address && (
         <>
           {" "}
-          <div className="mt-4">
+          <div className="mt-8 my-6">
             <label
               htmlFor="image"
               className="p-4 border-dashed border-4 border-gray-600 block cursor-pointer"
@@ -143,7 +151,7 @@ export default function HouseForm() {
               ref={register({
                 validate: (fileList: FileList) => {
                   if (fileList.length === 1) return true;
-                  return "Plese upload one file";
+                  return "Plese upload a file";
                 },
               })}
               onChange={(event: ChangeEvent<HTMLInputElement>) => {
@@ -167,12 +175,12 @@ export default function HouseForm() {
                 style={{ width: "576px", height: `${(9 / 16) * 575}px` }}
               ></img>
             )}
-            {errors.image && <p>{errors.image.message}</p>}
+            {errors.image && <p className="mt-1">{errors.image.message}</p>}
           </div>
           <div className="mt-4">
-            <label htmlFor="price" className="block">
+            <label htmlFor="price" className="block mb-1">
               {" "}
-              Price
+              Initial price
             </label>{" "}
             <input
               className="p-2"
@@ -192,6 +200,8 @@ export default function HouseForm() {
           font-bold
           py-2
           px-4
+          mr-4
+          mt-8
           rounded"
               type="submit"
               disabled={submitting}
