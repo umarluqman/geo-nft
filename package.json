@@ -54,7 +54,7 @@
     "react-map-gl": "^5.2.10",
     "redaxios": "^0.4.1",
     "reflect-metadata": "^0.1.13",
-    "tailwindcss": "^2.0.1",
+    "tailwindcss": "^2.2.6",
     "type-graphql": "^1.1.1",
     "use-debounce": "^5.0.4",
     "use-google-maps-script": "^0.1.0",
