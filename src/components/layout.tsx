@@ -1,7 +1,6 @@
 import { FunctionComponent, ReactNode } from "react";
 import Link from "next/link";
 import { Account } from "src/account/components/Account";
-import { useAuth } from "src/auth/useAuth";
 interface iProps {
   main: ReactNode;
 }
@@ -12,13 +11,12 @@ const Layout: FunctionComponent<iProps> = ({ main }) => {
       <nav className="bg-gray-800" style={{ height: 64 }}>
         <div className="px-6 flex items-center justify-between h-16">
           <Link href="/">
-            <a>
-              <img
-                src="/home-color.svg"
-                alt="home house"
-                className="inline w-6"
-              ></img>
-            </a>
+            <p className="font-medium">
+              ONE World <span className="ml-1">🌏</span>
+            </p>
+          </Link>
+          <Link href="/my-locations">
+            <p className="cursor-pointer">View My Locations</p>
           </Link>
           <Account />
         </div>
