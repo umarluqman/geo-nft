@@ -12,7 +12,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
     <AuthProvider>
       <ApolloProvider client={client}>
         <Head>
-          <title>Home sweet home</title>
+          <title>ONE World</title>
           <link rel="icon" href="/favicon.ico"></link>
         </Head>
         <Component {...pageProps} />
