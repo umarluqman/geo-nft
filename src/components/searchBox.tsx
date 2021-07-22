@@ -13,6 +13,7 @@ import {
   ComboboxOption,
 } from "@reach/combobox";
 import "@reach/combobox/styles.css";
+import { useRouter } from "next/router";
 
 interface ISearchBoxProps {
   onSelectAddress: (
@@ -47,6 +48,7 @@ export const SearchBox = ({
 };
 
 const ReadySearchBox = ({ onSelectAddress, defaultValue }: ISearchBoxProps) => {
+  const router = useRouter();
   const {
     ready,
     value,
@@ -86,7 +88,11 @@ const ReadySearchBox = ({ onSelectAddress, defaultValue }: ISearchBoxProps) => {
         value={value}
         onChange={handleChange}
         disabled={!ready}
-        placeholder="Eg. Kuala Lumpur"
+        placeholder={
+          router.pathname === "/"
+            ? "Search minted locations"
+            : "Eg. Kuala Lumpur"
+        }
         className="w-full p-2"
         autoComplete="off"
       />
