@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import { useEffect, useMemo, useState } from "react";
 import axios from "redaxios";
-import HouseList from "src/components/houseList";
+import LocationList from "src/components/locationList";
 import Layout from "src/components/layout";
 import Map from "src/components/map";
 import { useLastData } from "src/utils/useLastData";
@@ -126,7 +126,7 @@ export default function MyNFTs() {
             className="w-1/2 pb-4"
             style={{ maxHeight: "calc(100vh - 64px)", overflowX: "scroll" }}
           >
-            <HouseList
+            <LocationList
               nfts={lastData ? lastData : []}
               setHighlightedId={setHighlightedId}
               loadNFTs={loadNFTs}
