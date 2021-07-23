@@ -9,6 +9,7 @@ import { useLocalState } from "src/utils/useLocalState";
 import { useDebounce } from "use-debounce";
 import Marketplace from "../artifacts/contracts/OneWorld.sol/Marketplace.json";
 import Token from "../artifacts/contracts/OneWorld.sol/Token.json";
+import { Marketplace as MarketplaceType } from "types/Marketplace";
 
 const tokenAddress = process.env.NEXT_PUBLIC_NFT_ADDRESS;
 const marketplaceAddress = process.env.NEXT_PUBLIC_MARKETPLACE_ADDRESS;
@@ -30,10 +31,25 @@ const parseBounds = (boundsString: string) => {
   };
 };
 
+interface IAttributes {
+  latitude: number;
+  longitude: number;
+}
+
+interface ILocation {
+  price: string;
+  tokenId: number;
+  seller: string;
+  owner: string;
+  image: string;
+  address: string;
+  attributes: IAttributes;
+}
+
 export default function Home() {
-  const [highlightedId, setHighlightedId] = useState<string | null>(null);
-  const [nfts, setNfts] = useState([]);
-  const [fetchingStatus, setFetchingStatus] = useState("idle");
+  const [highlightedId, setHighlightedId] = useState<number | null>(null);
+  const [nfts, setNfts] = useState<ILocation[]>([]);
+  const [fetchingStatus, setFetchingStatus] = useState<string>("idle");
 
   async function loadNFTs() {
     setFetchingStatus("fetching");
@@ -47,11 +63,11 @@ export default function Home() {
       marketplaceAddress,
       Marketplace.abi,
       provider
-    );
+    ) as MarketplaceType;
     try {
       const data = await marketContract.fetchMarketItems();
 
-      const items = await Promise.all(
+      const items: ILocation[] = await Promise.all(
         data.map(async (i) => {
           let tokenURI = await tokenContract.tokenURI(i.tokenId);
 
@@ -62,14 +78,13 @@ export default function Home() {
           );
           let price = ethers.utils.formatUnits(i.price.toString(), "ether");
 
-          let item = {
+          let item: ILocation = {
             price,
             tokenId: i.tokenId.toNumber(),
             seller: i.seller,
             owner: i.owner,
             image: meta.url,
             address: tokenURI.name,
-            // description: tokenURI.description,
             attributes: tokenURI.attributes,
           };
           console.log({ item });

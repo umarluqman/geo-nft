@@ -9,9 +9,24 @@ import Marketplace from "../../artifacts/contracts/OneWorld.sol/Marketplace.json
 import Token from "../../artifacts/contracts/OneWorld.sol/Token.json";
 // import Image from "next/image";
 
+interface IAttributes {
+  latitude: number;
+  longitude: number;
+}
+
+interface ILocation {
+  price: string;
+  tokenId: number;
+  seller: string;
+  owner: string;
+  image: string;
+  address: string;
+  attributes: IAttributes;
+}
 interface IProps {
-  houses: HousesQuery_houses[];
-  setHighlightedId: (id: string | null) => void;
+  nfts: ILocation[];
+  setHighlightedId: (id: number | null) => void;
+  fetchingStatus: string;
 }
 
 const tokenAddress = process.env.NEXT_PUBLIC_NFT_ADDRESS;
@@ -24,7 +39,7 @@ export default function LocationList({
 }: IProps) {
   const router = useRouter();
 
-  async function buyNft(nft) {
+  async function buyNft(nft: ILocation) {
     console.log({ nft });
 
     try {
@@ -54,7 +69,7 @@ export default function LocationList({
     }
   }
 
-  const listNft = (nft) => async () => {
+  const listNft = (nft: ILocation) => async () => {
     console.log({ nft });
 
     try {
@@ -106,7 +121,7 @@ export default function LocationList({
 
   return (
     <>
-      {nfts?.map((nft) => (
+      {nfts?.map((nft: ILocation) => (
         <div
           key={nft.tokenId}
           className="px-6 pt-4 cursor-pointer flex flex-wrap"

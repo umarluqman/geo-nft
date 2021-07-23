@@ -5,14 +5,28 @@ import { useLocalState } from "src/utils/useLocalState";
 import { HousesQuery_houses } from "src/generated/HousesQuery";
 import { SearchBox } from "./searchBox";
 
+interface IAttributes {
+  latitude: number;
+  longitude: number;
+}
+
+interface ILocation {
+  price: string;
+  tokenId: number;
+  seller: string;
+  owner: string;
+  image: string;
+  address: string;
+  attributes: IAttributes;
+}
 interface iProps {
   setDataBounds: (bounds: string) => void;
-  nfts: HousesQuery_houses[];
-  highlightedId: string | null;
+  nfts: ILocation[];
+  highlightedId: number | null;
 }
 
 const Map = ({ setDataBounds, nfts, highlightedId }: iProps) => {
-  const [selected, setSelected] = useState<HousesQuery_houses | null>(null);
+  const [selected, setSelected] = useState<ILocation | null>(null);
 
   const mapRef = useRef<ReactMapGL | null>();
 
