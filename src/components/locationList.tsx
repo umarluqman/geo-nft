@@ -89,11 +89,17 @@ export default function LocationList({
   console.log({ fetchingStatus });
   if (nfts?.length === 0 && fetchingStatus === "done-fetching") {
     return (
-      <p className="p-2 ">
-        You don't own any location NFT, get one{" "}
-        <Link href="/">
-          <a className="text-green-400 font-medium">here</a>
-        </Link>
+      <p className="p-3">
+        {router.pathname === "/" ? (
+          "No available cities to purchase"
+        ) : (
+          <>
+            You don't own any location NFT, get one
+            <Link href="/">
+              <a className="text-green-400 font-medium">here</a>
+            </Link>
+          </>
+        )}
       </p>
     );
   }

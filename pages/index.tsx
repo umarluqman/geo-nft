@@ -126,6 +126,8 @@ export default function Home() {
             className="w-1/2 pb-4"
             style={{ maxHeight: "calc(100vh - 64px)", overflowX: "scroll" }}
           >
+            <h2 className="pt-3 px-3">Marketplace</h2>
+            <h2 className="px-3">Purchase a whole city across the world</h2>
             <LocationList
               nfts={lastData ? lastData : []}
               setHighlightedId={setHighlightedId}
