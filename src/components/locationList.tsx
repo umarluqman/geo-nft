@@ -54,6 +54,38 @@ export default function LocationList({
     }
   }
 
+  const listNft = (nft) => async () => {
+    console.log({ nft });
+
+    try {
+      const web3Modal = new Web3Modal();
+      const connection = await web3Modal.connect();
+      const provider = new ethers.providers.Web3Provider(connection);
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(
+        marketplaceAddress,
+        Marketplace.abi,
+        signer
+      );
+
+      const price = ethers.utils.parseUnits(nft.price, "ether");
+
+      let listingPrice = await contract.getListingPrice(price);
+      listingPrice = listingPrice.toString();
+
+      const transaction = await contract.createMarketItem(
+        tokenAddress,
+        nft.tokenId,
+        price,
+        { value: listingPrice }
+      );
+      await transaction.wait();
+      router.push("/");
+    } catch (error) {
+      console.log({ error });
+    }
+  };
+
   console.log({ fetchingStatus });
   if (nfts?.length === 0 && fetchingStatus === "done-fetching") {
     return (
@@ -88,17 +120,17 @@ export default function LocationList({
             <p className="text-blue-300">{nft.price} ONE</p>
             {router.pathname === "/" ? (
               <button
-                className="bg-green-200 text-green-600 hover:bg-green-500 hover:text-green-100  font-bold py-2 px-12 rounded"
+                className="bg-green-500 font-medium py-2 px-12 rounded"
                 onClick={() => buyNft(nft)}
               >
                 Buy
               </button>
             ) : (
               <button
-                className="bg-green-200 text-green-600 hover:bg-green-500 hover:text-green-100  font-bold py-2 px-12 rounded"
-                onClick={() => {}}
+                className="bg-green-500 font-medium py-2 px-12 rounded"
+                onClick={listNft(nft)}
               >
-                Sell
+                List on marketplace
               </button>
             )}
           </div>
