@@ -2,8 +2,10 @@ import { ethers } from "ethers";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
+import { Marketplace as MarketplaceType, Token as TokenType } from "types";
 import Web3Modal from "web3modal";
 import Marketplace from "../../artifacts/contracts/OneWorld.sol/Marketplace.json";
+import Token from "../../artifacts/contracts/OneWorld.sol/Token.json";
 
 interface IAttributes {
   latitude: number;
@@ -73,22 +75,40 @@ export default function LocationList({
       const connection = await web3Modal.connect();
       const provider = new ethers.providers.Web3Provider(connection);
       const signer = provider.getSigner();
+
+      const ownerAddress = await signer.getAddress();
+
+      console.log("signer address", ownerAddress);
       const contract = new ethers.Contract(
+        tokenAddress,
+        Token.abi,
+        signer
+      ) as TokenType;
+
+      const balanceOf = await contract.balanceOf(ownerAddress);
+      console.log("owner balance", balanceOf.toString());
+
+      const owner = await contract.ownerOf(nft.tokenId);
+      console.log("owner address", owner);
+
+      const marketplaceContract = new ethers.Contract(
         marketplaceAddress,
         Marketplace.abi,
         signer
-      );
+      ) as MarketplaceType;
 
       const price = ethers.utils.parseUnits(nft.price, "ether");
 
-      let listingPrice = await contract.getListingPrice(price);
-      listingPrice = listingPrice.toString();
+      let listingPrice = await marketplaceContract.getListingPrice(price);
+      const marketplaceFee: string = listingPrice.toString();
 
-      const transaction = await contract.createMarketItem(
+      console.log({ tokenId: nft.tokenId, tokenAddress, price });
+
+      const transaction = await marketplaceContract.createMarketItem(
         tokenAddress,
         nft.tokenId,
         price,
-        { value: listingPrice }
+        { value: marketplaceFee }
       );
       await transaction.wait();
       router.push("/");
