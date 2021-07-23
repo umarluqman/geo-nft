@@ -29,8 +29,6 @@
     "autoprefixer": "^10.0.2",
     "chai": "^4.3.4",
     "class-validator": "^0.12.2",
-    "cloudinary": "^1.23.0",
-    "cloudinary-react": "^1.6.7",
     "cookie": "^0.4.1",
     "deepmerge": "^4.2.2",
     "eth-hooks": "^1.1.2",
