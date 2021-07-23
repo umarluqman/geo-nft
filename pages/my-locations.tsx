@@ -9,11 +9,33 @@ import { useLocalState } from "src/utils/useLocalState";
 import { useDebounce } from "use-debounce";
 import Marketplace from "../artifacts/contracts/OneWorld.sol/Marketplace.json";
 import Token from "../artifacts/contracts/OneWorld.sol/Token.json";
+import { Token as TokenType, Marketplace as MarketplaceType } from "types";
 
 const tokenAddress = process.env.NEXT_PUBLIC_NFT_ADDRESS;
 const marketplaceAddress = process.env.NEXT_PUBLIC_MARKETPLACE_ADDRESS;
 
 type BoundsArray = [[number, number], [number, number]];
+interface ITokenURI {
+  image: string;
+  address: string;
+  name: string;
+  attributes: IAttributes;
+}
+
+interface IAttributes {
+  latitude: number;
+  longitude: number;
+}
+
+interface ILocation {
+  price: string;
+  tokenId: number;
+  seller: string;
+  owner: string;
+  image: string;
+  address: string;
+  attributes: IAttributes;
+}
 
 const parseBounds = (boundsString: string) => {
   const bounds = JSON.parse(boundsString) as BoundsArray;
@@ -31,8 +53,8 @@ const parseBounds = (boundsString: string) => {
 };
 
 export default function MyNFTs() {
-  const [highlightedId, setHighlightedId] = useState<string | null>(null);
-  const [nfts, setNfts] = useState([]);
+  const [highlightedId, setHighlightedId] = useState<number | null>(null);
+  const [nfts, setNfts] = useState<ILocation[]>([]);
   const [fetchingStatus, setFetchingStatus] = useState("idle");
 
   async function loadNFTs() {
@@ -44,12 +66,12 @@ export default function MyNFTs() {
       tokenAddress,
       Token.abi,
       provider
-    );
+    ) as TokenType;
     const marketContract = new ethers.Contract(
       marketplaceAddress,
       Marketplace.abi,
       signer
-    );
+    ) as MarketplaceType;
 
     setFetchingStatus("fetching");
     try {
@@ -60,10 +82,10 @@ export default function MyNFTs() {
         data.map(async (i) => {
           let tokenURI = await tokenContract.tokenURI(i.tokenId);
 
-          tokenURI = JSON.parse(tokenURI);
+          const parsedTokenURI: ITokenURI = JSON.parse(tokenURI);
 
           const meta = await axios.get(
-            "https://ipfs.infura.io/ipfs/" + tokenURI.image
+            "https://ipfs.infura.io/ipfs/" + parsedTokenURI.image
           );
           let price = ethers.utils.formatUnits(i.price.toString(), "ether");
 
@@ -73,9 +95,8 @@ export default function MyNFTs() {
             seller: i.seller,
             owner: i.owner,
             image: meta.url,
-            address: tokenURI.name,
-            // description: tokenURI.description,
-            attributes: tokenURI.attributes,
+            address: parsedTokenURI.name,
+            attributes: parsedTokenURI.attributes,
           };
           console.log({ item });
           return item;

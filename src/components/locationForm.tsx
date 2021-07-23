@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import NFTMarketplace from "../../artifacts/contracts/OneWorld.sol/Marketplace.json";
 import Token from "../../artifacts/contracts/OneWorld.sol/Token.json";
 import { SearchBox } from "./searchBox";
+import { Token as TokenType, Marketplace as MarketplaceType } from "types";
 
 interface IFormData {
   address: string;
@@ -66,31 +67,35 @@ export default function HouseForm() {
           await requestAccount();
           const provider = new ethers.providers.Web3Provider(window.ethereum);
           const signer = provider.getSigner();
-          let contract = new ethers.Contract(tokenAddress, Token.abi, signer);
-          let transaction = await contract.createToken(
+          const tokenContract = new ethers.Contract(
+            tokenAddress,
+            Token.abi,
+            signer
+          ) as TokenType;
+          let transaction = await tokenContract.createToken(
             JSON.stringify(tokenURI)
           );
           const tx = await transaction.wait();
-          let event = tx.events[0];
-          let value = event.args[2];
+          let event = tx?.events?.[0];
+          let value = event?.args?.[2];
           let tokenId = value.toNumber();
 
           const price = ethers.utils.parseUnits(data.price, "ether");
 
-          contract = new ethers.Contract(
+          const marketplaceContract = new ethers.Contract(
             nftMarketplaceAddress,
             NFTMarketplace.abi,
             signer
-          );
+          ) as MarketplaceType;
 
-          let listingPrice = await contract.getListingPrice(price);
-          listingPrice = listingPrice.toString();
+          let listingPrice = await marketplaceContract.getListingPrice(price);
+          const marketplaceFee: string = listingPrice.toString();
 
-          transaction = await contract.createMarketItem(
+          transaction = await marketplaceContract.createMarketItem(
             tokenAddress,
             tokenId,
             price,
-            { value: listingPrice }
+            { value: marketplaceFee }
           );
           await transaction.wait();
           router.push("/");

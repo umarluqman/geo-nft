@@ -9,7 +9,7 @@ import { useLocalState } from "src/utils/useLocalState";
 import { useDebounce } from "use-debounce";
 import Marketplace from "../artifacts/contracts/OneWorld.sol/Marketplace.json";
 import Token from "../artifacts/contracts/OneWorld.sol/Token.json";
-import { Marketplace as MarketplaceType } from "types/Marketplace";
+import { Token as TokenType, Marketplace as MarketplaceType } from "types";
 
 const tokenAddress = process.env.NEXT_PUBLIC_NFT_ADDRESS;
 const marketplaceAddress = process.env.NEXT_PUBLIC_MARKETPLACE_ADDRESS;
@@ -30,6 +30,13 @@ const parseBounds = (boundsString: string) => {
     },
   };
 };
+
+interface ITokenURI {
+  image: string;
+  address: string;
+  name: string;
+  attributes: IAttributes;
+}
 
 interface IAttributes {
   latitude: number;
@@ -58,7 +65,7 @@ export default function Home() {
       tokenAddress,
       Token.abi,
       provider
-    );
+    ) as TokenType;
     const marketContract = new ethers.Contract(
       marketplaceAddress,
       Marketplace.abi,
@@ -67,25 +74,25 @@ export default function Home() {
     try {
       const data = await marketContract.fetchMarketItems();
 
-      const items: ILocation[] = await Promise.all(
+      const items = await Promise.all(
         data.map(async (i) => {
           let tokenURI = await tokenContract.tokenURI(i.tokenId);
 
-          tokenURI = JSON.parse(tokenURI);
+          const parsedTokenURI: ITokenURI = JSON.parse(tokenURI);
 
           const meta = await axios.get(
-            "https://ipfs.infura.io/ipfs/" + tokenURI.image
+            "https://ipfs.infura.io/ipfs/" + parsedTokenURI.image
           );
           let price = ethers.utils.formatUnits(i.price.toString(), "ether");
 
-          let item: ILocation = {
+          let item = {
             price,
             tokenId: i.tokenId.toNumber(),
             seller: i.seller,
             owner: i.owner,
             image: meta.url,
-            address: tokenURI.name,
-            attributes: tokenURI.attributes,
+            address: parsedTokenURI.name,
+            attributes: parsedTokenURI.attributes,
           };
           console.log({ item });
           return item;
