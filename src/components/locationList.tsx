@@ -1,13 +1,9 @@
 import { ethers } from "ethers";
 import Link from "next/link";
-import router, { useRouter } from "next/router";
-import React, { useState } from "react";
-import { HousesQuery_houses } from "src/generated/HousesQuery";
-// import { Marketplace } from "types";
+import { useRouter } from "next/router";
+import React from "react";
 import Web3Modal from "web3modal";
 import Marketplace from "../../artifacts/contracts/OneWorld.sol/Marketplace.json";
-import Token from "../../artifacts/contracts/OneWorld.sol/Token.json";
-// import Image from "next/image";
 
 interface IAttributes {
   latitude: number;
