@@ -87,15 +87,9 @@ contract Marketplace is ReentrancyGuard {
     uint tokenId,
     uint price
   ) public payable nonReentrant {
-
-
-
+    
     require(price > 0, "Price must be at least 1 wei");
     require(msg.value == fivePercentOf(price), "Price must be equal to the 5 percent of the price.");
-    
-
-    console.log("price", price);
-    console.log("listing price", fivePercentOf(price));
 
     _itemIds.increment();
     uint itemId = _itemIds.current();
