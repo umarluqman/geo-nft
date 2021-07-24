@@ -102,7 +102,9 @@ contract Marketplace is ReentrancyGuard {
       payable(address(0)), // pass as empty address
       price,
       false
-    );        
+    );    
+
+    console.log("from address", msg.sender);   
 
     // transfer the nftContract from the sender address to the address of the marketplace contract;
     IERC721(nftContract).transferFrom(msg.sender, address(this), tokenId);

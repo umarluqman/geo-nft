@@ -39,7 +39,7 @@ describe("Token contract", function () {
 
     ownerAddress = owner;
     token.isApprovedForAll;
-    buyer = address1;
+    token.buyer = address1;
     otherAddressList = otherAddresses;
   });
 

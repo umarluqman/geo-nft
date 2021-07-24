@@ -15,7 +15,7 @@ describe("NFT marketplace contract", function () {
   let tokenContract;
   let tokenContractAddress;
 
-  let ownerAddress;
+  let owner;
   let alice; // account 1
   let nonOwner;
   let otherAddressList;
@@ -32,21 +32,21 @@ describe("NFT marketplace contract", function () {
     tokenContractAddress = tokenContract.address;
 
     const [
-      owner,
+      address0,
       address1,
       address2,
       ...otherAddresses
     ] = await ethers.getSigners();
-
-    ownerAddress = owner.address;
+    owner = address0;
     alice = address1;
+
     nonOwner = address2;
     otherAddressList = otherAddresses;
   });
 
   describe("Deployment", () => {
     it("Should set the right owner", async function () {
-      expect(await tokenContract.owner()).to.equal(ownerAddress);
+      expect(await tokenContract.owner()).to.equal(owner.address);
     });
     it("Should be deployed", async function () {
       expect(marketplaceContract).to.exist;
@@ -75,13 +75,13 @@ describe("NFT marketplace contract", function () {
       tokenId = value.toNumber();
     });
     it("Should be minted to the owner", async function () {
-      expect(await tokenContract.ownerOf(tokenId)).to.equal(ownerAddress);
+      expect(await tokenContract.ownerOf(tokenId)).to.equal(owner.address);
     });
 
     it("Should approve marketplace contract for all", async function () {
       expect(
         await tokenContract.isApprovedForAll(
-          ownerAddress,
+          owner.address,
           marketContractAddress
         )
       ).to.equal(true);
@@ -154,7 +154,7 @@ describe("NFT marketplace contract", function () {
 
       expect(items[0].price).to.equal(price);
       expect(items[0].tokenId).to.equal(tokenId);
-      expect(items[0].seller).to.equal(ownerAddress);
+      expect(items[0].seller).to.equal(owner.address);
       expect(items[0].owner).to.equal(emptyAddress);
       expect(items[0].image).to.equal(tokenURI.image);
       expect(items[0].address).to.equal(tokenURI.name);
@@ -198,7 +198,7 @@ describe("NFT marketplace contract", function () {
       expect(items[0].tokenId).to.equal(tokenId);
 
       expect(items[0].seller).to.equal(
-        ownerAddress,
+        owner.address,
         "Item's seller should be the owner address"
       );
 
@@ -216,24 +216,38 @@ describe("NFT marketplace contract", function () {
         tokenURI.attributes.longitude
       );
 
-      // //List item back after purchase
+      //List item back after purchase
 
-      // const price = ethers.utils.parseUnits("600", "ether");
-      // const marketplaceFee = ethers.utils.parseUnits("30", "ether"); // 5% of 500
+      const itemPrice = ethers.utils.parseUnits("600", "ether");
+      const marketplaceFee = ethers.utils.parseUnits("30", "ether"); // 5% of 500
 
-      // listingPrice = await marketplaceContract.getListingPrice(price);
+      listingPrice = await marketplaceContract
+        .connect(alice)
+        .getListingPrice(itemPrice);
 
-      // transaction = await marketplaceContract.createMarketItem(
-      //   tokenContractAddress,
-      //   tokenId,
-      //   price,
-      //   { value: listingPrice }
-      // );
-      // await transaction.wait();
+      const ownerOfToken = await tokenContract.ownerOf(tokenId);
+      expect(ownerOfToken).to.equal(
+        alice.address,
+        "Alice should be the owner of the token"
+      );
+      console.log("--start--");
+      console.log("alice address", alice.address);
 
-      // expect(listingPrice.toString()).to.equal(
-      //   marketplaceFee.toString(),
-      //   "Should be 5% of the market item price"
+      transaction = await marketplaceContract
+        .connect(alice)
+        .createMarketItem(tokenContractAddress, tokenId, itemPrice, {
+          value: listingPrice,
+        });
+      await transaction.wait();
+      console.log("--end--");
+
+      expect(listingPrice.toString()).to.equal(
+        marketplaceFee.toString(),
+        "Should be 5% of the market item price"
+      );
+      // expect().to.equal(
+      //   emptyAddress,
+      //   "Owner of the market item should be empty address"
       // );
     });
   });
