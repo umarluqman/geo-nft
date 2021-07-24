@@ -18,7 +18,6 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "hardhat.config.js"],
-  "exclude": ["node_modules", ".env.local"],
-  "files": ["hardhat.config.js"]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "test/token-test.js"],
+  "exclude": ["node_modules", ".env.local"]
 }
