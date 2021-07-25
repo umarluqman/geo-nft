@@ -121,7 +121,9 @@ describe("NFT marketplace contract", function () {
         tokenContractAddress,
         tokenId,
         price,
-        { value: listingPrice }
+        {
+          value: listingPrice,
+        }
       );
       await transaction.wait();
     });
@@ -231,24 +233,20 @@ describe("NFT marketplace contract", function () {
         "Alice should be the owner of the token"
       );
       console.log("--start--");
-      console.log("alice address", alice.address);
+      console.log("alice address", alice.address.toLowerCase());
 
-      transaction = await marketplaceContract
-        .connect(alice)
-        .createMarketItem(tokenContractAddress, tokenId, itemPrice, {
-          value: listingPrice,
-        });
-      await transaction.wait();
+      // transaction = await marketplaceContract
+      //   .connect(alice)
+      //   .createMarketItem(tokenContractAddress, tokenId, itemPrice, {
+      //     value: listingPrice,
+      //   });
+      // await transaction.wait();
       console.log("--end--");
 
       expect(listingPrice.toString()).to.equal(
         marketplaceFee.toString(),
         "Should be 5% of the market item price"
       );
-      // expect().to.equal(
-      //   emptyAddress,
-      //   "Owner of the market item should be empty address"
-      // );
     });
   });
 });
