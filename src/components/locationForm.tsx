@@ -55,11 +55,11 @@ export default function HouseForm() {
     if (ipfs) {
       setSubmitting(false);
       try {
-        const result = await ipfs.add(data.image[0]);
+        // const result = await ipfs.add(data.image[0]);
         const tokenURI = {
           name: data.name,
           address: data.address,
-          image: result.path,
+          // image: result.path,
           attributes: {
             latitude: data.latitude,
             longitude: data.longitude,
@@ -144,7 +144,7 @@ export default function HouseForm() {
       {address && (
         <>
           {" "}
-          <div className="mt-8 my-6">
+          {/* <div className="mt-8 my-6">
             <label
               htmlFor="image"
               className="p-4 border-dashed border-4 border-gray-600 block cursor-pointer"
@@ -185,7 +185,7 @@ export default function HouseForm() {
               ></img>
             )}
             {errors.image && <p className="mt-1">{errors.image.message}</p>}
-          </div>
+          </div> */}
           <div className="mt-4">
             <label htmlFor="price" className="block mb-1">
               {" "}

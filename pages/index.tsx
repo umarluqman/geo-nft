@@ -10,6 +10,7 @@ import { useDebounce } from "use-debounce";
 import Marketplace from "../artifacts/contracts/OneWorld.sol/Marketplace.json";
 import Token from "../artifacts/contracts/OneWorld.sol/Token.json";
 import { Token as TokenType, Marketplace as MarketplaceType } from "types";
+import { extractJSONFromURI } from "src/utils/extractJSONFromURI";
 
 const tokenAddress = process.env.NEXT_PUBLIC_NFT_ADDRESS;
 const marketplaceAddress = process.env.NEXT_PUBLIC_MARKETPLACE_ADDRESS;
@@ -81,9 +82,18 @@ export default function Home() {
 
             const parsedTokenURI: ITokenURI = JSON.parse(tokenURI);
 
-            const meta = await axios.get(
-              "https://ipfs.infura.io/ipfs/" + parsedTokenURI.image
+            let svgData = await tokenContract.getSVG(
+              i.tokenId,
+              parsedTokenURI.attributes.latitude,
+              parsedTokenURI.attributes.longitude,
+              parsedTokenURI.name
             );
+
+            const json = extractJSONFromURI(svgData);
+            console.log("json.image :>> ", json.image);
+
+            console.log("svgData", svgData);
+
             let price = ethers.utils.formatUnits(i.price.toString(), "ether");
 
             let item = {
@@ -91,7 +101,7 @@ export default function Home() {
               tokenId: i.tokenId.toNumber(),
               seller: i.seller,
               owner: i.owner,
-              image: meta.url,
+              image: json.image,
               address: parsedTokenURI.name,
               attributes: parsedTokenURI.attributes,
             };
