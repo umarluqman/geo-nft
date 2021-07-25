@@ -47,8 +47,8 @@ const Map = ({ setDataBounds, nfts, highlightedId }: iProps) => {
         mapboxApiAccessToken={process.env.NEXT_PUBLIC_MAPBOX_API_TOKEN}
         onViewportChange={(nextViewport) => setViewport(nextViewport)}
         ref={(instance) => (mapRef.current = instance)}
-        minZoom={5}
-        maxZoom={100}
+        minZoom={0}
+        maxZoom={15}
         mapStyle="mapbox://styles/leighhalliday/ckhjaksxg0x2v19s1ovps41ef"
         onLoad={() => {
           if (mapRef.current) {
