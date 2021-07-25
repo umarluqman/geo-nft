@@ -53,6 +53,7 @@ export default function HouseForm() {
 
   const handleCreate = async (data: IFormData) => {
     try {
+      setSubmitting(true);
       // const result = await ipfs.add(data.image[0]);
       const tokenURI = {
         name: data.name,
@@ -116,7 +117,6 @@ export default function HouseForm() {
   };
 
   const onSubmit = (data: IFormData) => {
-    setSubmitting(true);
     handleCreate(data);
   };
 
@@ -189,7 +189,7 @@ export default function HouseForm() {
           <div className="mt-4">
             <label htmlFor="price" className="block mb-1">
               {" "}
-              Initial price
+              Initial price (ONE)
             </label>{" "}
             <input
               className="p-2"
@@ -215,7 +215,7 @@ export default function HouseForm() {
               type="submit"
               disabled={submitting}
             >
-              Save
+              {submitting ? "Loading..." : "Save"}
             </button>{" "}
             <Link href={"/"}>
               <a>Cancel</a>

@@ -113,7 +113,7 @@ library NFTSVG {
     function generateSVGRareMark(uint256 tokenId, string memory tokenAddress) private pure returns (string memory svg) {
         if (isRare(tokenId, tokenAddress)) {
             svg = string(
-                abi.encodePacked('<rect x="16" y="16" width="258" height="468" rx="26" ry="26" fill="black" />')
+                abi.encodePacked('<rect x="16" y="16" width="258" height="468" rx="25" ry="25" fill="black" />')
             );
         } else {
             svg = '';
