@@ -20,7 +20,14 @@ async function main() {
 
   console.log("Marketplace deployed to:", address);
 
-  const NFT = await hre.ethers.getContractFactory("Token");
+  const generativeNFT = await ethers.getContractFactory("NFTDescriptor");
+  const generativeNFTContract = await generativeNFT.deploy();
+
+  const NFT = await hre.ethers.getContractFactory("Token", {
+    libraries: {
+      NFTDescriptor: generativeNFTContract.address,
+    },
+  });
   const nft = await NFT.deploy(address);
 
   const { address: tokenAddress } = await nft.deployed();
