@@ -91,8 +91,8 @@ export default function MyNFTs() {
 
           let svgData = await tokenContract.getSVG(
             i.tokenId,
-            parsedTokenURI.attributes.latitude,
-            parsedTokenURI.attributes.longitude,
+            parsedTokenURI.attributes.latitude.toString(),
+            parsedTokenURI.attributes.longitude.toString(),
             parsedTokenURI.name
           );
 

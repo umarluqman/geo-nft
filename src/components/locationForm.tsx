@@ -52,66 +52,66 @@ export default function HouseForm() {
   }
 
   const handleCreate = async (data: IFormData) => {
-    if (ipfs) {
-      setSubmitting(false);
-      try {
-        // const result = await ipfs.add(data.image[0]);
-        const tokenURI = {
-          name: data.name,
-          address: data.address,
-          // image: result.path,
-          attributes: {
-            latitude: data.latitude,
-            longitude: data.longitude,
-          },
-        };
+    try {
+      // const result = await ipfs.add(data.image[0]);
+      const tokenURI = {
+        name: data.name,
+        address: data.address,
+        // image: result.path,
+        attributes: {
+          latitude: data.latitude,
+          longitude: data.longitude,
+        },
+      };
 
-        if (typeof window.ethereum !== "undefined" && tokenAddress) {
-          await requestAccount();
-          const provider = new ethers.providers.Web3Provider(window.ethereum);
-          const signer = provider.getSigner();
-          const tokenContract = new ethers.Contract(
-            tokenAddress,
-            Token.abi,
-            signer
-          ) as TokenType;
-          let transaction = await tokenContract.createToken(
-            JSON.stringify(tokenURI)
-          );
-          const tx = await transaction.wait();
-          let event = tx?.events?.[0];
-          let value = event?.args?.[2];
-          let tokenId = value.toNumber();
+      if (typeof window.ethereum !== "undefined" && tokenAddress) {
+        await requestAccount();
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        const tokenContract = new ethers.Contract(
+          tokenAddress,
+          Token.abi,
+          signer
+        ) as TokenType;
+        let transaction = await tokenContract.createToken(
+          JSON.stringify(tokenURI)
+        );
+        const tx = await transaction.wait();
+        let event = tx?.events?.[0];
+        let value = event?.args?.[2];
+        let tokenId = value.toNumber();
 
-          const price = ethers.utils.parseUnits(data.price, "ether");
+        const price = ethers.utils.parseUnits(data.price, "ether");
 
-          const marketplaceContract = new ethers.Contract(
-            nftMarketplaceAddress,
-            NFTMarketplace.abi,
-            signer
-          ) as MarketplaceType;
+        const marketplaceContract = new ethers.Contract(
+          nftMarketplaceAddress,
+          NFTMarketplace.abi,
+          signer
+        ) as MarketplaceType;
 
-          let listingPrice = await marketplaceContract.getListingPrice(price);
-          const marketplaceFee: string = listingPrice.toString();
+        let listingPrice = await marketplaceContract.getListingPrice(price);
+        const marketplaceFee: string = listingPrice.toString();
 
-          transaction = await marketplaceContract.createMarketItem(
-            tokenAddress,
-            tokenId,
-            price,
-            { value: marketplaceFee }
-          );
-          await transaction.wait();
-          router.push("/");
-        }
-      } catch (error) {
-        if (
-          error?.data?.message ===
-          "execution reverted: Ownable: caller is not the owner"
-        ) {
-          alert("Only the contract owner can mint");
-        }
-        console.log({ error });
+        transaction = await marketplaceContract.createMarketItem(
+          tokenAddress,
+          tokenId,
+          price,
+          { value: marketplaceFee }
+        );
+        await transaction.wait();
+
+        router.push("/");
       }
+    } catch (error) {
+      if (
+        error?.data?.message ===
+        "execution reverted: Ownable: caller is not the owner"
+      ) {
+        alert("Only the contract owner can mint");
+      }
+      console.log({ error });
+    } finally {
+      setSubmitting(false);
     }
   };
 
