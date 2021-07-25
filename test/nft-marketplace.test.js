@@ -199,7 +199,7 @@ describe("NFT marketplace contract", function () {
       );
     });
 
-    it("Should be able to let Alice buy the token, fetch the token and list it in the marketplace", async () => {
+    it("Should be able to let Alice buy the token, fetch the token", async () => {
       const transaction = await marketplaceContract
         .connect(alice)
         .createMarketSale(tokenContractAddress, tokenId, {
