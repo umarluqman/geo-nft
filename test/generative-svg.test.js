@@ -59,12 +59,12 @@ describe("Generative NFT on-chain", async function () {
       blockNumber: 5321,
       stakeAmount: 10000,
       uTokenAddress: token.address,
-      uTokenSymbol: "KL",
+      uTokenSymbol: "Kuala Lumpur",
     };
 
     console.log({ params });
     const expectedTokenUri = {
-      name: "KL-NFT",
+      name: "Kuala Lumpur NFT",
       description: "This NFT represents a top 200 cities in the planet Earth\n",
     };
     const json = extractJSONFromURI(

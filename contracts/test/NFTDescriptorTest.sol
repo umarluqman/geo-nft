@@ -8,7 +8,7 @@ import '../HexStrings.sol';
 contract NFTDescriptorTest {
     using HexStrings for uint256;
 
-    function constructTokenURI(NFTDescriptor.URIParams calldata params) public pure returns (string memory) {
+    function constructTokenURI(NFTDescriptor.URIParams calldata params) public view returns (string memory) {
         return NFTDescriptor.constructTokenURI(params);
     }
 
@@ -16,11 +16,11 @@ contract NFTDescriptorTest {
         return NFTDescriptor.addressToString(_address);
     }
 
-    function generateSVGImage(NFTDescriptor.URIParams memory params) public pure returns (string memory) {
+    function generateSVGImage(NFTDescriptor.URIParams memory params) public view returns (string memory) {
         return NFTDescriptor.generateSVGImage(params);
     }
 
-    function toColorHex(address token, uint256 offset) public pure returns (string memory) {
+    function toColorHex(address token, uint256 offset) public view returns (string memory) {
         return NFTDescriptor.toColorHex(uint256(token), offset);
     }
 

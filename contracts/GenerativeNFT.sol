@@ -28,8 +28,8 @@ library NFTDescriptor {
         string uTokenSymbol;
     }
 
-    function constructTokenURI(URIParams memory params) public pure returns (string memory) {
-        string memory name = string(abi.encodePacked(params.uTokenSymbol, '-NFT'));
+    function constructTokenURI(URIParams memory params) public view returns (string memory) {
+        string memory name = string(abi.encodePacked(params.uTokenSymbol, ' NFT'));
         string memory description = generateDescription();
         string memory image = Base64.encode(bytes(generateSVGImage(params)));
 
@@ -81,7 +81,10 @@ library NFTDescriptor {
         return (uint256(addr)).toHexString(20);
     }
 
-    function toColorHex(uint256 base, uint256 offset) internal pure returns (string memory str) {
+    function toColorHex(uint256 base, uint256 offset) internal view returns (string memory str) {
+        console.log("base", base);
+        console.log("(base >> offset)", (base >> offset));
+        console.log("hex", string((base >> offset).toHexStringNoPrefix(3)));
         return string((base >> offset).toHexStringNoPrefix(3));
     }
 
@@ -94,7 +97,7 @@ library NFTDescriptor {
             );
     }
 
-    function generateSVGImage(URIParams memory params) internal pure returns (string memory svg) {
+    function generateSVGImage(URIParams memory params) internal view returns (string memory svg) {
         NFTSVG.SVGParams memory svgParams =
             NFTSVG.SVGParams({
                 tokenId: params.tokenId,
@@ -103,7 +106,7 @@ library NFTDescriptor {
                 uToken: addressToString(params.uTokenAddress),
                 uTokenSymbol: params.uTokenSymbol,
                 color0: toColorHex(uint256(keccak256(abi.encodePacked(params.uTokenAddress, params.tokenId))), 136),
-                color1: toColorHex(uint256(keccak256(abi.encodePacked(params.uTokenAddress, params.tokenId))), 0)
+                color1: toColorHex(uint256(keccak256(abi.encodePacked(params.uTokenAddress, params.tokenId))), 40)
             });
 
         return NFTSVG.generateSVG(svgParams);
