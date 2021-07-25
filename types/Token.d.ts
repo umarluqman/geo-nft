@@ -26,6 +26,7 @@ interface TokenInterface extends ethers.utils.Interface {
     "baseURI()": FunctionFragment;
     "createToken(string)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
+    "getSVG(uint256,string,string,string)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "name()": FunctionFragment;
     "owner()": FunctionFragment;
@@ -53,6 +54,10 @@ interface TokenInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "getApproved",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getSVG",
+    values: [BigNumberish, string, string, string]
   ): string;
   encodeFunctionData(
     functionFragment: "isApprovedForAll",
@@ -117,6 +122,7 @@ interface TokenInterface extends ethers.utils.Interface {
     functionFragment: "getApproved",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "getSVG", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isApprovedForAll",
     data: BytesLike
@@ -240,6 +246,14 @@ export class Token extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
+    getSVG(
+      tokenId: BigNumberish,
+      latitude: string,
+      longitude: string,
+      name: string,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
+
     isApprovedForAll(
       owner: string,
       operator: string,
@@ -338,6 +352,14 @@ export class Token extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string>;
 
+  getSVG(
+    tokenId: BigNumberish,
+    latitude: string,
+    longitude: string,
+    name: string,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
   isApprovedForAll(
     owner: string,
     operator: string,
@@ -427,6 +449,14 @@ export class Token extends BaseContract {
 
     getApproved(
       tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    getSVG(
+      tokenId: BigNumberish,
+      latitude: string,
+      longitude: string,
+      name: string,
       overrides?: CallOverrides
     ): Promise<string>;
 
@@ -558,6 +588,14 @@ export class Token extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getSVG(
+      tokenId: BigNumberish,
+      latitude: string,
+      longitude: string,
+      name: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     isApprovedForAll(
       owner: string,
       operator: string,
@@ -657,6 +695,14 @@ export class Token extends BaseContract {
 
     getApproved(
       tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getSVG(
+      tokenId: BigNumberish,
+      latitude: string,
+      longitude: string,
+      name: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

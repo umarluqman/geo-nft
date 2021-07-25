@@ -105,7 +105,7 @@ library NFTDescriptor {
                 uToken: params.latitude,
                 longitude: params.longitude,
                 name: params.name,
-                color0: toColorHex(uint256(keccak256(abi.encodePacked(params.latitude,params.longitude))), 136),
+                color0: toColorHex(uint256(keccak256(abi.encodePacked(params.latitude,params.longitude))), 236),
                 color1: toColorHex(uint256(keccak256(abi.encodePacked(params.latitude,params.longitude))), 0)
             });
 

@@ -57,8 +57,8 @@ describe("Generative NFT on-chain", async function () {
     const params = {
       tokenId: 10,
       blockNumber: 5321,
-      latitude: "40.4319077",
-      longitude: "116.5703749",
+      latitude: "116.5703749",
+      longitude: "40.4319077",
       name: "Kuala Lumpur",
     };
 

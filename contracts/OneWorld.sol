@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-
+import './GenerativeNFT.sol';
 
 import "hardhat/console.sol";
 
@@ -35,6 +35,18 @@ contract Token is ERC721, Ownable {
     setApprovalForAll(contractAddress, true);
     return newItemId;
   }
+
+  function getSVG(uint256 tokenId, string memory latitude, string memory longitude, string memory name) public view returns (string memory) {
+    return NFTDescriptor.constructTokenURI(
+      NFTDescriptor.URIParams({
+        tokenId: tokenId,
+        blockNumber: block.number,
+        latitude: latitude,
+        longitude: longitude,
+        name:name
+      })
+    );
+  } 
 }
 
 contract Marketplace is ReentrancyGuard {
@@ -209,8 +221,7 @@ contract Marketplace is ReentrancyGuard {
       }    
     }
     return items;
-  }
-        
+  }      
 }
 
 

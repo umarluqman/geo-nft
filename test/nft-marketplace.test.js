@@ -1,6 +1,7 @@
 const { ethers } = require("hardhat");
 const chai = require("chai");
 const { solidity } = require("ethereum-waffle");
+const fs = require("fs");
 
 chai.use(solidity);
 
@@ -26,7 +27,14 @@ describe("NFT marketplace contract", function () {
     await marketplaceContract.deployed();
     marketContractAddress = marketplaceContract.address;
 
-    NFTToken = await ethers.getContractFactory("Token");
+    const generativeNFT = await ethers.getContractFactory("NFTDescriptor");
+    const generativeNFTContract = await generativeNFT.deploy();
+
+    NFTToken = await ethers.getContractFactory("Token", {
+      libraries: {
+        NFTDescriptor: generativeNFTContract.address,
+      },
+    });
     tokenContract = await NFTToken.deploy(marketContractAddress);
     await tokenContract.deployed();
     tokenContractAddress = tokenContract.address;
@@ -56,9 +64,11 @@ describe("NFT marketplace contract", function () {
 
   describe("NFT token", () => {
     let tokenId;
+    let tokenURI;
     beforeEach(async function () {
-      const tokenURI = {
-        name: "Great Wall of China, Huairou District, China",
+      tokenURI = {
+        name: "Great Wall of China",
+        address: "Great Wall of China, Huairou District, China",
         image: "QmcEKozMSmS4sV37wkuU9Xe8ctvpNaeKDfBFPRo4Uz8kFJ",
         attributes: {
           latitude: "40.4319077",
@@ -85,6 +95,27 @@ describe("NFT marketplace contract", function () {
           marketContractAddress
         )
       ).to.equal(true);
+    });
+
+    it("Should generate svg file", async () => {
+      function extractJSONFromURI(uri) {
+        const encodedJSON = uri.substr("data:application/json;base64,".length);
+        const decodedJSON = Buffer.from(encodedJSON, "base64").toString("utf8");
+        return JSON.parse(decodedJSON);
+      }
+      const data = await tokenContract.getSVG(
+        tokenId,
+        tokenURI.attributes.latitude,
+        tokenURI.attributes.longitude,
+        tokenURI.name
+      );
+      const json = extractJSONFromURI(data);
+      console.log("json.image :>> ", json.image);
+
+      const base64Str = json.image.replace("data:image/svg+xml;base64,", "");
+      await fs.promises.writeFile("images/nft-example.svg", base64Str, {
+        encoding: "base64",
+      });
     });
   });
   describe("Marketplace", () => {
