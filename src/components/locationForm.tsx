@@ -13,6 +13,7 @@ interface IFormData {
   address: string;
   latitude: number;
   longitude: number;
+  name: string;
   price: string;
   image: FileList;
 }
@@ -35,6 +36,7 @@ export default function HouseForm() {
 
   useEffect(() => {
     register({ name: "address" }, { required: "Please enter your address" });
+    register({ name: "name" }, { required: "Please enter your address" });
     register({ name: "latitude" }, { required: true, min: -90, max: 90 });
     register({ name: "longitude" }, { required: true, min: -180, max: 180 });
   }, [register]);
@@ -55,7 +57,8 @@ export default function HouseForm() {
       try {
         const result = await ipfs.add(data.image[0]);
         const tokenURI = {
-          name: data.address,
+          name: data.name,
+          address: data.address,
           image: result.path,
           attributes: {
             latitude: data.latitude,
@@ -127,10 +130,11 @@ export default function HouseForm() {
           Search a location
         </label>
         <SearchBox
-          onSelectAddress={(address, latitude, longitude) => {
+          onSelectAddress={(address, latitude, longitude, name) => {
             setValue("address", address);
             setValue("latitude", latitude);
             setValue("longitude", longitude);
+            setValue("name", name);
           }}
           defaultValue={""}
         />

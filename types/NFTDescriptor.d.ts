@@ -31,7 +31,7 @@ interface NFTDescriptorInterface extends ethers.utils.Interface {
         blockNumber: BigNumberish;
         stakeAmount: BigNumberish;
         uTokenAddress: string;
-        uTokenSymbol: string;
+        name: string;
       }
     ]
   ): string;
@@ -94,7 +94,7 @@ export class NFTDescriptor extends BaseContract {
         blockNumber: BigNumberish;
         stakeAmount: BigNumberish;
         uTokenAddress: string;
-        uTokenSymbol: string;
+        name: string;
       },
       overrides?: CallOverrides
     ): Promise<[string]>;
@@ -106,7 +106,7 @@ export class NFTDescriptor extends BaseContract {
       blockNumber: BigNumberish;
       stakeAmount: BigNumberish;
       uTokenAddress: string;
-      uTokenSymbol: string;
+      name: string;
     },
     overrides?: CallOverrides
   ): Promise<string>;
@@ -118,7 +118,7 @@ export class NFTDescriptor extends BaseContract {
         blockNumber: BigNumberish;
         stakeAmount: BigNumberish;
         uTokenAddress: string;
-        uTokenSymbol: string;
+        name: string;
       },
       overrides?: CallOverrides
     ): Promise<string>;
@@ -133,7 +133,7 @@ export class NFTDescriptor extends BaseContract {
         blockNumber: BigNumberish;
         stakeAmount: BigNumberish;
         uTokenAddress: string;
-        uTokenSymbol: string;
+        name: string;
       },
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -146,7 +146,7 @@ export class NFTDescriptor extends BaseContract {
         blockNumber: BigNumberish;
         stakeAmount: BigNumberish;
         uTokenAddress: string;
-        uTokenSymbol: string;
+        name: string;
       },
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;

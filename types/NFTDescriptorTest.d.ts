@@ -39,7 +39,7 @@ interface NFTDescriptorTestInterface extends ethers.utils.Interface {
         blockNumber: BigNumberish;
         stakeAmount: BigNumberish;
         uTokenAddress: string;
-        uTokenSymbol: string;
+        name: string;
       }
     ]
   ): string;
@@ -51,7 +51,7 @@ interface NFTDescriptorTestInterface extends ethers.utils.Interface {
         blockNumber: BigNumberish;
         stakeAmount: BigNumberish;
         uTokenAddress: string;
-        uTokenSymbol: string;
+        name: string;
       }
     ]
   ): string;
@@ -137,7 +137,7 @@ export class NFTDescriptorTest extends BaseContract {
         blockNumber: BigNumberish;
         stakeAmount: BigNumberish;
         uTokenAddress: string;
-        uTokenSymbol: string;
+        name: string;
       },
       overrides?: CallOverrides
     ): Promise<[string]>;
@@ -148,7 +148,7 @@ export class NFTDescriptorTest extends BaseContract {
         blockNumber: BigNumberish;
         stakeAmount: BigNumberish;
         uTokenAddress: string;
-        uTokenSymbol: string;
+        name: string;
       },
       overrides?: CallOverrides
     ): Promise<[string]>;
@@ -174,7 +174,7 @@ export class NFTDescriptorTest extends BaseContract {
       blockNumber: BigNumberish;
       stakeAmount: BigNumberish;
       uTokenAddress: string;
-      uTokenSymbol: string;
+      name: string;
     },
     overrides?: CallOverrides
   ): Promise<string>;
@@ -185,7 +185,7 @@ export class NFTDescriptorTest extends BaseContract {
       blockNumber: BigNumberish;
       stakeAmount: BigNumberish;
       uTokenAddress: string;
-      uTokenSymbol: string;
+      name: string;
     },
     overrides?: CallOverrides
   ): Promise<string>;
@@ -214,7 +214,7 @@ export class NFTDescriptorTest extends BaseContract {
         blockNumber: BigNumberish;
         stakeAmount: BigNumberish;
         uTokenAddress: string;
-        uTokenSymbol: string;
+        name: string;
       },
       overrides?: CallOverrides
     ): Promise<string>;
@@ -225,7 +225,7 @@ export class NFTDescriptorTest extends BaseContract {
         blockNumber: BigNumberish;
         stakeAmount: BigNumberish;
         uTokenAddress: string;
-        uTokenSymbol: string;
+        name: string;
       },
       overrides?: CallOverrides
     ): Promise<string>;
@@ -257,7 +257,7 @@ export class NFTDescriptorTest extends BaseContract {
         blockNumber: BigNumberish;
         stakeAmount: BigNumberish;
         uTokenAddress: string;
-        uTokenSymbol: string;
+        name: string;
       },
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -268,7 +268,7 @@ export class NFTDescriptorTest extends BaseContract {
         blockNumber: BigNumberish;
         stakeAmount: BigNumberish;
         uTokenAddress: string;
-        uTokenSymbol: string;
+        name: string;
       },
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -298,7 +298,7 @@ export class NFTDescriptorTest extends BaseContract {
         blockNumber: BigNumberish;
         stakeAmount: BigNumberish;
         uTokenAddress: string;
-        uTokenSymbol: string;
+        name: string;
       },
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -309,7 +309,7 @@ export class NFTDescriptorTest extends BaseContract {
         blockNumber: BigNumberish;
         stakeAmount: BigNumberish;
         uTokenAddress: string;
-        uTokenSymbol: string;
+        name: string;
       },
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;

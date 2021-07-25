@@ -59,50 +59,52 @@ export default function Home() {
   const [fetchingStatus, setFetchingStatus] = useState<string>("idle");
 
   async function loadNFTs() {
-    setFetchingStatus("fetching");
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const tokenContract = new ethers.Contract(
-      tokenAddress,
-      Token.abi,
-      provider
-    ) as TokenType;
-    const marketContract = new ethers.Contract(
-      marketplaceAddress,
-      Marketplace.abi,
-      provider
-    ) as MarketplaceType;
-    try {
-      const data = await marketContract.fetchMarketItems();
+    if (window.ethereum) {
+      setFetchingStatus("fetching");
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const tokenContract = new ethers.Contract(
+        tokenAddress,
+        Token.abi,
+        provider
+      ) as TokenType;
+      const marketContract = new ethers.Contract(
+        marketplaceAddress,
+        Marketplace.abi,
+        provider
+      ) as MarketplaceType;
+      try {
+        const data = await marketContract.fetchMarketItems();
 
-      const items = await Promise.all(
-        data.map(async (i) => {
-          let tokenURI = await tokenContract.tokenURI(i.tokenId);
+        const items = await Promise.all(
+          data.map(async (i) => {
+            let tokenURI = await tokenContract.tokenURI(i.tokenId);
 
-          const parsedTokenURI: ITokenURI = JSON.parse(tokenURI);
+            const parsedTokenURI: ITokenURI = JSON.parse(tokenURI);
 
-          const meta = await axios.get(
-            "https://ipfs.infura.io/ipfs/" + parsedTokenURI.image
-          );
-          let price = ethers.utils.formatUnits(i.price.toString(), "ether");
+            const meta = await axios.get(
+              "https://ipfs.infura.io/ipfs/" + parsedTokenURI.image
+            );
+            let price = ethers.utils.formatUnits(i.price.toString(), "ether");
 
-          let item = {
-            price,
-            tokenId: i.tokenId.toNumber(),
-            seller: i.seller,
-            owner: i.owner,
-            image: meta.url,
-            address: parsedTokenURI.name,
-            attributes: parsedTokenURI.attributes,
-          };
-          console.log({ item });
-          return item;
-        })
-      );
-      setNfts(items);
-    } catch (error) {
-      console.log({ error });
-    } finally {
-      setFetchingStatus("done-fetching");
+            let item = {
+              price,
+              tokenId: i.tokenId.toNumber(),
+              seller: i.seller,
+              owner: i.owner,
+              image: meta.url,
+              address: parsedTokenURI.name,
+              attributes: parsedTokenURI.attributes,
+            };
+            console.log({ item });
+            return item;
+          })
+        );
+        setNfts(items);
+      } catch (error) {
+        console.log({ error });
+      } finally {
+        setFetchingStatus("done-fetching");
+      }
     }
   }
 

@@ -33,7 +33,7 @@ const _abi = [
           },
           {
             internalType: "string",
-            name: "uTokenSymbol",
+            name: "name",
             type: "string",
           },
         ],

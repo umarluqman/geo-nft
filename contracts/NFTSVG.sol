@@ -17,7 +17,7 @@ library NFTSVG {
         uint256 blockNumber;
         uint256 stakeAmount;
         string uToken;
-        string uTokenSymbol;
+        string name;
         string color0;
         string color1;
     }
@@ -87,7 +87,7 @@ library NFTSVG {
         svg = string(
             abi.encodePacked(
                 '<g fill="white" font-family="Courier New, monospace"><text font-size="36" x="30" y="60">',
-                params.uTokenSymbol,
+                params.name,
                 '</text><text x="30" y="440">Block: #',
                 params.blockNumber.toString(),
                 '</text><text x="30" y="470">ID: ',

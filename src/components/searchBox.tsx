@@ -19,7 +19,8 @@ interface ISearchBoxProps {
   onSelectAddress: (
     address: string,
     latitude: number | null,
-    longitute: number | null
+    longitute: number | null,
+    name: string
   ) => void;
   defaultValue: string;
 }
@@ -60,7 +61,7 @@ const ReadySearchBox = ({ onSelectAddress, defaultValue }: ISearchBoxProps) => {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
     if (e.target.value === "") {
-      onSelectAddress("", null, null);
+      onSelectAddress("", null, null, "");
     }
   };
 
@@ -74,8 +75,16 @@ const ReadySearchBox = ({ onSelectAddress, defaultValue }: ISearchBoxProps) => {
       });
 
       const { lat, lng } = await getLatLng(results[0]);
-
-      onSelectAddress(address, lat, lng);
+      console.log({
+        name: results[0].address_components[0].short_name,
+        address,
+      });
+      onSelectAddress(
+        address,
+        lat,
+        lng,
+        results[0].address_components[0].short_name
+      );
     } catch (error) {
       console.error("Error", error);
     }

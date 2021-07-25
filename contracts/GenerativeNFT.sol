@@ -25,11 +25,11 @@ library NFTDescriptor {
         uint256 blockNumber;
         uint256 stakeAmount;
         address uTokenAddress;
-        string uTokenSymbol;
+        string name;
     }
 
     function constructTokenURI(URIParams memory params) public view returns (string memory) {
-        string memory name = string(abi.encodePacked(params.uTokenSymbol, ' NFT'));
+        string memory name = string(abi.encodePacked(params.name, ' NFT'));
         string memory description = generateDescription();
         string memory image = Base64.encode(bytes(generateSVGImage(params)));
 
@@ -104,7 +104,7 @@ library NFTDescriptor {
                 blockNumber: params.blockNumber,
                 stakeAmount: params.stakeAmount,
                 uToken: addressToString(params.uTokenAddress),
-                uTokenSymbol: params.uTokenSymbol,
+                name: params.name,
                 color0: toColorHex(uint256(keccak256(abi.encodePacked(params.uTokenAddress, params.tokenId))), 136),
                 color1: toColorHex(uint256(keccak256(abi.encodePacked(params.uTokenAddress, params.tokenId))), 40)
             });
