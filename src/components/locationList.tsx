@@ -61,7 +61,7 @@ export default function LocationList({
         }
       );
       await transaction.wait();
-      router.push("/my-assets");
+      router.push("/my-locations");
     } catch (error) {
       console.log({ error });
     }

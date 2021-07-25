@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { useEffect, useMemo, useState } from "react";
-import axios from "redaxios";
+// import axios from "redaxios";
 import LocationList from "src/components/locationList";
 import Layout from "src/components/layout";
 import Map from "src/components/map";
