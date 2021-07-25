@@ -13,6 +13,19 @@ task("accounts", "Prints the list of accounts", async () => {
   }
 });
 
+const LOWEST_OPTIMIZER_COMPILER_SETTINGS = {
+  version: "0.7.6",
+  settings: {
+    optimizer: {
+      enabled: true,
+      runs: 1_000,
+    },
+    metadata: {
+      bytecodeHash: "none",
+    },
+  },
+};
+
 // You need to export an object to set up your config
 // Go to https://hardhat.org/config/ to learn more
 
@@ -20,7 +33,7 @@ task("accounts", "Prints the list of accounts", async () => {
  * @type import('hardhat/config').HardhatUserConfig
  */
 module.exports = {
-  solidity: "0.8.4",
+  // solidity: "0.8.4",
   networks: {
     testnet: {
       url: `https://api.s0.b.hmny.io`,
@@ -36,5 +49,32 @@ module.exports = {
     target: "ethers-v5",
     alwaysGenerateOverloads: false, // should overloads with full signatures like deposit(uint256) be generated always, even if there are no overloads?
     externalArtifacts: ["externalArtifacts/*.json"], // optional array of glob patterns with external artifacts to process (for example external libs from node_modules)
+  },
+  solidity: {
+    compilers: [
+      {
+        version: "0.6.12",
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 200,
+          },
+        },
+      },
+      {
+        version: "0.7.6",
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 200,
+          },
+        },
+      },
+    ],
+    overrides: {
+      // 'contracts/test/NFTDescriptorTest.sol': LOWEST_OPTIMIZER_COMPILER_SETTINGS,
+      // 'contracts/NonfungibleTokenPositionDescriptor.sol': LOWEST_OPTIMIZER_COMPILER_SETTINGS,
+      "contracts/GenerativeNFT.sol": LOWEST_OPTIMIZER_COMPILER_SETTINGS,
+    },
   },
 };

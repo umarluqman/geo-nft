@@ -15,14 +15,17 @@
     "db:migrate:down": "yarn prisma migrate down --experimental",
     "compile": "npx hardhat compile",
     "testnet:deploy": "npx hardhat run scripts/deploy-world.js --network testnet",
-    "token:test": "npx hardhat test test/token-test.js"
+    "test:token": "npx hardhat test test/nft-marketplace.test.js",
+    "test:svg": "npx hardhat test test/generative-svg.test.js"
   },
   "dependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.2",
     "@nomiclabs/hardhat-waffle": "^2.0.1",
-    "@openzeppelin/contracts": "^4.2.0",
+    "@openzeppelin/contracts": "^3.4.0",
     "@reach/combobox": "^0.11.2",
     "autoprefixer": "^10.0.2",
+    "base64-sol": "^1.0.1",
+    "chai-bignumber": "^3.0.0",
     "ethereum-waffle": "^3.4.0",
     "ethers": "^5.4.0",
     "geolib": "^3.3.1",
@@ -61,8 +64,8 @@
     "postcss-flexbugs-fixes": "^5.0.1",
     "postcss-preset-env": "^6.7.0",
     "prettier": "^2.1.2",
-    "ts-node": "^10.1.0",
     "ts-generator": "^0.1.1",
+    "ts-node": "^10.1.0",
     "typechain": "^5.1.2",
     "typescript": "^4.0.5"
   },
