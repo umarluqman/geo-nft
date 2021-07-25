@@ -18,6 +18,7 @@ describe("Generative NFT on-chain", async function () {
   let token;
   let nftDescriptor;
   let loadFixture;
+  let json;
 
   const generativeNFTFixture = async () => {
     const generativeNFT = await ethers.getContractFactory("NFTDescriptor");
@@ -54,32 +55,42 @@ describe("Generative NFT on-chain", async function () {
     return JSON.parse(decodedJSON);
   }
   it("constructURIParams", async function () {
-    const params = {
-      tokenId: 10,
-      blockNumber: 5321,
-      latitude: "116.5703749",
-      longitude: "40.4319077",
-      name: "Kuala Lumpur",
-    };
+    const params = [
+      {
+        tokenId: 10,
+        blockNumber: 5431,
+        latitude: "116.5703749",
+        longitude: "40.4319077",
+        name: "Kuala Lumpur",
+      },
+      {
+        tokenId: 11,
+        blockNumber: 1345,
+        latitude: "-6.2087634",
+        longitude: "106.845599",
+        name: "Jakarta",
+      },
+      {
+        tokenId: 12,
+        blockNumber: 4345,
+        latitude: "51.5073509",
+        longitude: "-0.1277583",
+        name: "London",
+      },
+    ];
 
-    console.log("tokenAddress", token.address);
+    params.forEach(async (param, index) => {
+      const data = await nftDescriptor.constructTokenURI(param);
+      json = extractJSONFromURI(data);
 
-    console.log({ params });
-    const expectedTokenUri = {
-      name: "Kuala Lumpur NFT",
-      description: "This NFT represents a top 200 cities in the planet Earth\n",
-    };
-    const json = extractJSONFromURI(
-      await nftDescriptor.constructTokenURI(params)
-    );
-    console.log("json.image :>> ", json.image);
-
-    const base64Str = json.image.replace("data:image/svg+xml;base64,", "");
-    await fs.promises.writeFile("images/nft-example.svg", base64Str, {
-      encoding: "base64",
+      const base64Str = json.image.replace("data:image/svg+xml;base64,", "");
+      await fs.promises.writeFile(
+        `images/nft-example-${index}.svg`,
+        base64Str,
+        {
+          encoding: "base64",
+        }
+      );
     });
-
-    expect(json.description).to.equal(expectedTokenUri.description);
-    expect(json.name).to.equal(expectedTokenUri.name);
   });
 });

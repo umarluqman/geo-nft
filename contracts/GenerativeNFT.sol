@@ -85,7 +85,7 @@ library NFTDescriptor {
         console.log("base", base);
         console.log("(base >> offset)", (base >> offset));
         console.log("hex", string((base >> offset).toHexStringNoPrefix(3)));
-        return string((base >> offset).toHexStringNoPrefix(3));
+        return string((base <<= offset).toHexStringNoPrefix(3));
     }
 
     function generateDescription() private pure returns (string memory) {
@@ -105,7 +105,7 @@ library NFTDescriptor {
                 uToken: params.latitude,
                 longitude: params.longitude,
                 name: params.name,
-                color0: toColorHex(uint256(keccak256(abi.encodePacked(params.latitude,params.longitude))), 236),
+                color0: toColorHex(uint256(keccak256(abi.encodePacked(params.latitude,params.longitude))), 136),
                 color1: toColorHex(uint256(keccak256(abi.encodePacked(params.latitude,params.longitude))), 0)
             });
 
