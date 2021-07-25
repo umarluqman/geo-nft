@@ -23,8 +23,8 @@ library NFTDescriptor {
     struct URIParams {
         uint256 tokenId;
         uint256 blockNumber;
-        uint256 stakeAmount;
-        address uTokenAddress;
+        string latitude;
+        string longitude;
         string name;
     }
 
@@ -102,11 +102,11 @@ library NFTDescriptor {
             NFTSVG.SVGParams({
                 tokenId: params.tokenId,
                 blockNumber: params.blockNumber,
-                stakeAmount: params.stakeAmount,
-                uToken: addressToString(params.uTokenAddress),
+                uToken: params.latitude,
+                longitude: params.longitude,
                 name: params.name,
-                color0: toColorHex(uint256(keccak256(abi.encodePacked(params.uTokenAddress, params.tokenId))), 136),
-                color1: toColorHex(uint256(keccak256(abi.encodePacked(params.uTokenAddress, params.tokenId))), 40)
+                color0: toColorHex(uint256(keccak256(abi.encodePacked(params.latitude,params.longitude))), 136),
+                color1: toColorHex(uint256(keccak256(abi.encodePacked(params.latitude,params.longitude))), 0)
             });
 
         return NFTSVG.generateSVG(svgParams);

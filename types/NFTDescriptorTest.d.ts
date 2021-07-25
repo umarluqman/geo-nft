@@ -37,8 +37,8 @@ interface NFTDescriptorTestInterface extends ethers.utils.Interface {
       {
         tokenId: BigNumberish;
         blockNumber: BigNumberish;
-        stakeAmount: BigNumberish;
-        uTokenAddress: string;
+        latitude: string;
+        longitude: string;
         name: string;
       }
     ]
@@ -49,8 +49,8 @@ interface NFTDescriptorTestInterface extends ethers.utils.Interface {
       {
         tokenId: BigNumberish;
         blockNumber: BigNumberish;
-        stakeAmount: BigNumberish;
-        uTokenAddress: string;
+        latitude: string;
+        longitude: string;
         name: string;
       }
     ]
@@ -135,8 +135,8 @@ export class NFTDescriptorTest extends BaseContract {
       params: {
         tokenId: BigNumberish;
         blockNumber: BigNumberish;
-        stakeAmount: BigNumberish;
-        uTokenAddress: string;
+        latitude: string;
+        longitude: string;
         name: string;
       },
       overrides?: CallOverrides
@@ -146,8 +146,8 @@ export class NFTDescriptorTest extends BaseContract {
       params: {
         tokenId: BigNumberish;
         blockNumber: BigNumberish;
-        stakeAmount: BigNumberish;
-        uTokenAddress: string;
+        latitude: string;
+        longitude: string;
         name: string;
       },
       overrides?: CallOverrides
@@ -172,8 +172,8 @@ export class NFTDescriptorTest extends BaseContract {
     params: {
       tokenId: BigNumberish;
       blockNumber: BigNumberish;
-      stakeAmount: BigNumberish;
-      uTokenAddress: string;
+      latitude: string;
+      longitude: string;
       name: string;
     },
     overrides?: CallOverrides
@@ -183,8 +183,8 @@ export class NFTDescriptorTest extends BaseContract {
     params: {
       tokenId: BigNumberish;
       blockNumber: BigNumberish;
-      stakeAmount: BigNumberish;
-      uTokenAddress: string;
+      latitude: string;
+      longitude: string;
       name: string;
     },
     overrides?: CallOverrides
@@ -212,8 +212,8 @@ export class NFTDescriptorTest extends BaseContract {
       params: {
         tokenId: BigNumberish;
         blockNumber: BigNumberish;
-        stakeAmount: BigNumberish;
-        uTokenAddress: string;
+        latitude: string;
+        longitude: string;
         name: string;
       },
       overrides?: CallOverrides
@@ -223,8 +223,8 @@ export class NFTDescriptorTest extends BaseContract {
       params: {
         tokenId: BigNumberish;
         blockNumber: BigNumberish;
-        stakeAmount: BigNumberish;
-        uTokenAddress: string;
+        latitude: string;
+        longitude: string;
         name: string;
       },
       overrides?: CallOverrides
@@ -255,8 +255,8 @@ export class NFTDescriptorTest extends BaseContract {
       params: {
         tokenId: BigNumberish;
         blockNumber: BigNumberish;
-        stakeAmount: BigNumberish;
-        uTokenAddress: string;
+        latitude: string;
+        longitude: string;
         name: string;
       },
       overrides?: CallOverrides
@@ -266,8 +266,8 @@ export class NFTDescriptorTest extends BaseContract {
       params: {
         tokenId: BigNumberish;
         blockNumber: BigNumberish;
-        stakeAmount: BigNumberish;
-        uTokenAddress: string;
+        latitude: string;
+        longitude: string;
         name: string;
       },
       overrides?: CallOverrides
@@ -296,8 +296,8 @@ export class NFTDescriptorTest extends BaseContract {
       params: {
         tokenId: BigNumberish;
         blockNumber: BigNumberish;
-        stakeAmount: BigNumberish;
-        uTokenAddress: string;
+        latitude: string;
+        longitude: string;
         name: string;
       },
       overrides?: CallOverrides
@@ -307,8 +307,8 @@ export class NFTDescriptorTest extends BaseContract {
       params: {
         tokenId: BigNumberish;
         blockNumber: BigNumberish;
-        stakeAmount: BigNumberish;
-        uTokenAddress: string;
+        latitude: string;
+        longitude: string;
         name: string;
       },
       overrides?: CallOverrides

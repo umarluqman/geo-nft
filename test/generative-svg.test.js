@@ -57,25 +57,12 @@ describe("Generative NFT on-chain", async function () {
     const params = {
       tokenId: 10,
       blockNumber: 5321,
-      stakeAmount: 10000,
-      uTokenAddress: token.address,
-      // uTokenAddress: 4043190771165703749,
+      latitude: "40.4319077",
+      longitude: "116.5703749",
       name: "Kuala Lumpur",
     };
 
     console.log("tokenAddress", token.address);
-
-    const params2 = {
-      name: "Tokyo",
-      blockNumber: 5321,
-      tokenId: 10,
-      address: "Tokyo, Japan",
-      image: "QmcEKozMSmS4sV37wkuU9Xe8ctvpNaeKDfBFPRo4Uz8kFJ",
-      attributes: {
-        latitude: "40.4319077",
-        longitude: "116.5703749",
-      },
-    };
 
     console.log({ params });
     const expectedTokenUri = {

@@ -29,8 +29,8 @@ interface NFTDescriptorInterface extends ethers.utils.Interface {
       {
         tokenId: BigNumberish;
         blockNumber: BigNumberish;
-        stakeAmount: BigNumberish;
-        uTokenAddress: string;
+        latitude: string;
+        longitude: string;
         name: string;
       }
     ]
@@ -92,8 +92,8 @@ export class NFTDescriptor extends BaseContract {
       params: {
         tokenId: BigNumberish;
         blockNumber: BigNumberish;
-        stakeAmount: BigNumberish;
-        uTokenAddress: string;
+        latitude: string;
+        longitude: string;
         name: string;
       },
       overrides?: CallOverrides
@@ -104,8 +104,8 @@ export class NFTDescriptor extends BaseContract {
     params: {
       tokenId: BigNumberish;
       blockNumber: BigNumberish;
-      stakeAmount: BigNumberish;
-      uTokenAddress: string;
+      latitude: string;
+      longitude: string;
       name: string;
     },
     overrides?: CallOverrides
@@ -116,8 +116,8 @@ export class NFTDescriptor extends BaseContract {
       params: {
         tokenId: BigNumberish;
         blockNumber: BigNumberish;
-        stakeAmount: BigNumberish;
-        uTokenAddress: string;
+        latitude: string;
+        longitude: string;
         name: string;
       },
       overrides?: CallOverrides
@@ -131,8 +131,8 @@ export class NFTDescriptor extends BaseContract {
       params: {
         tokenId: BigNumberish;
         blockNumber: BigNumberish;
-        stakeAmount: BigNumberish;
-        uTokenAddress: string;
+        latitude: string;
+        longitude: string;
         name: string;
       },
       overrides?: CallOverrides
@@ -144,8 +144,8 @@ export class NFTDescriptor extends BaseContract {
       params: {
         tokenId: BigNumberish;
         blockNumber: BigNumberish;
-        stakeAmount: BigNumberish;
-        uTokenAddress: string;
+        latitude: string;
+        longitude: string;
         name: string;
       },
       overrides?: CallOverrides
