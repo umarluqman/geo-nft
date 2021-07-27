@@ -15,7 +15,7 @@ The moving gradient is uniquely generated based on the latitude and longitude.
 - On-chain NFT generated via SVG, inspired by Uniswap LP NFT.
 - Only owner (Ownable contract) can mint NFT at `localhost:3000/location/add`
 - Owner can mint any places using Google Places autocomplete.
-- User can buy NFT and see their own NFT.
+- User can buy NFT and see their own NFT and where the NFT is located in the map.
 
 ## Roadmap
 
