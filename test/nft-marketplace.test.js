@@ -259,25 +259,27 @@ describe("NFT marketplace contract", function () {
         .getListingPrice(itemPrice);
 
       const ownerOfToken = await tokenContract.ownerOf(tokenId);
+      console.log("ownerOf", ownerOfToken);
       expect(ownerOfToken).to.equal(
         alice.address,
         "Alice should be the owner of the token"
       );
-      // console.log("--start--");
-      // console.log("alice address", alice.address.toLowerCase());
+      console.log("--start--");
+      console.log("alice lowercase", alice.address.toLowerCase());
+      console.log("alice", alice.address);
 
-      // transaction = await marketplaceContract
-      //   .connect(alice)
-      //   .createMarketItem(tokenContractAddress, tokenId, itemPrice, {
-      //     value: listingPrice,
-      //   });
-      // await transaction.wait();
-      // console.log("--end--");
+      transaction = await marketplaceContract
+        .connect(alice)
+        .createMarketItem(tokenContractAddress, tokenId, itemPrice, {
+          value: listingPrice,
+        });
+      await transaction.wait();
+      console.log("--end--");
 
-      // expect(listingPrice.toString()).to.equal(
-      //   marketplaceFee.toString(),
-      //   "Should be 5% of the market item price"
-      // );
+      expect(listingPrice.toString()).to.equal(
+        marketplaceFee.toString(),
+        "Should be 5% of the market item price"
+      );
     });
   });
 });
